@@ -1,0 +1,50 @@
+Metadata-Version: 2.1
+Name: colabdrive
+Version: 0.1.0
+Summary: A tool for managing Google Drive operations in Google Colab
+Author-email: Eren Devrimci <eren.devrimci@example.com>
+Project-URL: Homepage, https://github.com/erendevrimci/colabdrive
+Project-URL: Bug Tracker, https://github.com/erendevrimci/colabdrive/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: google-auth
+Requires-Dist: google-auth-oauthlib
+Requires-Dist: google-auth-httplib2
+Requires-Dist: google-api-python-client
+Requires-Dist: boto3
+Requires-Dist: dropbox
+Requires-Dist: gradio
+Provides-Extra: colab
+Requires-Dist: google-colab; extra == "colab"
+
+# ColabDrive
+
+A tool for managing Google Drive operations in Google Colab environments.
+
+## Features
+
+- Mount Google Drive in Colab
+- Upload and download files
+- Convert file formats
+- Download models from Hugging Face
+- Clone GitHub repositories
+- Download models from Civitai
+
+## Installation
+
+For local development:
+```bash
+pip install colabdrive
+```
+
+When using in Google Colab, install with Colab extras:
+```bash
+pip install colabdrive[colab]
+```
+
+## Usage
+
+See the included Colab notebook for examples.
