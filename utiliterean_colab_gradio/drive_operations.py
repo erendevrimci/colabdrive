@@ -24,7 +24,14 @@ class DriveOperations:
             return False
             
     def list_files(self, directory: str = '/content/drive/My Drive') -> Optional[List[str]]:
-        """List all files in a specified directory."""
+        """List all files in a specified directory.
+        
+        Args:
+            directory (str): Path to directory to list, defaults to root of My Drive
+            
+        Returns:
+            Optional[List[str]]: List of filenames if successful, None if failed
+        """
         try:
             files = os.listdir(directory)
             return files

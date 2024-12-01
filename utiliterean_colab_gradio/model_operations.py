@@ -10,8 +10,9 @@ class ModelOperations:
     
     def __init__(self) -> None:
         """Initialize ModelOperations."""
-        self.default_path = '/content/drive/My Drive/models'
+        self.default_path = os.path.join('/content/drive/My Drive', 'models')
         os.makedirs(self.default_path, exist_ok=True)
+        self.chunk_size = 8192
         
     def download_from_huggingface(self, model_name: str, file_name: str) -> Optional[str]:
         """Download a specific file from HuggingFace."""

@@ -17,9 +17,69 @@ class UI:
         self.drive_operations = DriveOperations()
         self.model_operations = ModelOperations()
 
+    def mount_drive(self) -> str:
+        """Mount Google Drive and return status.
+
+        Returns:
+            str: Status message indicating mount result
+        """
+        success = self.drive_operations.mount_drive()
+        return "Drive mounted successfully!" if success else "Failed to mount drive"
+
+    def list_directory(self, directory: str) -> str:
+        """List files in the specified directory.
+
+        Args:
+            directory (str): Path to directory to list
+
+        Returns:
+            str: Newline-separated list of files or error message
+        """
+        files = self.drive_operations.list_files(directory)
+        if files:
+            return "\n".join(files)
+        return "Failed to list files"
+
+    def download_from_huggingface(self, model_name: str, file_name: str) -> str:
+        """Download a file from HuggingFace.
+        
+        Args:
+            model_name (str): Name of the model/repo on HuggingFace
+            file_name (str): Name of file to download
+            
+        Returns:
+            str: Status message indicating download result
+        """
+        result = self.model_operations.download_from_huggingface(model_name, file_name)
+        return f"Downloaded to {result}" if result else "Download failed"
+
+    def clone_github_repo(self, repo_url: str) -> str:
+        """Clone a GitHub repository.
+        
+        Args:
+            repo_url (str): URL of GitHub repository
+            
+        Returns:
+            str: Status message indicating clone result
+        """
+        result = self.model_operations.clone_github_repo(repo_url)
+        return f"Cloned to {result}" if result else "Clone failed"
+
+    def download_from_civitai(self, model_url: str) -> str:
+        """Download a model from CivitAI.
+        
+        Args:
+            model_url (str): URL of the model on CivitAI
+            
+        Returns:
+            str: Status message indicating download result
+        """
+        result = self.model_operations.download_civitai_model(model_url)
+        return f"Downloaded to {result}" if result else "Download failed"
+
     def create_interface(self) -> None:
         """Creates the user interface for the application."""
-        with gr.Blocks() as self.interface:
+        with gr.Blocks(title="Utiliterean Colab Assistant") as self.interface:
             # Mount Drive Section
             gr.Markdown("## Google Drive Operations")
             with gr.Row():
