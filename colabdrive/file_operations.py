@@ -9,7 +9,7 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 
 # Import the logger instance from logger.py
-from utiliterean_colab_gradio.logger import logger
+from colabdrive.logger import logger
 
 class FileOperations:
     """Class for handling file uploads, downloads, and conversions."""

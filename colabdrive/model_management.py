@@ -1,7 +1,7 @@
 ## model_management.py
 
 from typing import Optional
-from utiliterean_colab_gradio.logger import logger
+from colabdrive.logger import logger
 
 class ModelManagement:
     """Class for loading and managing models from HuggingFace and CivitAI."""

@@ -4,10 +4,10 @@ import gradio as gr
 from typing import Optional
 from gradio.themes.utils import colors
 from gradio.themes import Base
-from utiliterean_colab_gradio.logger import logger
-from utiliterean_colab_gradio.file_operations import FileOperations
-from utiliterean_colab_gradio.drive_operations import DriveOperations
-from utiliterean_colab_gradio.model_operations import ModelOperations
+from colabdrive.logger import logger
+from colabdrive.file_operations import FileOperations
+from colabdrive.drive_operations import DriveOperations
+from colabdrive.model_operations import ModelOperations
 
 class UI:
     """Class for creating the user interface and displaying progress and errors."""

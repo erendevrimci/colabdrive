@@ -1,6 +1,6 @@
 import os
 from typing import List, Optional
-from utiliterean_colab_gradio.logger import logger
+from colabdrive.logger import logger
 
 class DriveOperations:
     """Class for Google Drive specific operations in Colab environment."""

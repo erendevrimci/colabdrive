@@ -1,12 +1,12 @@
 ## main.py
 
 import logging
-from utiliterean_colab_gradio.file_operations import FileOperations
-from utiliterean_colab_gradio.cloud_storage import CloudStorage
-from utiliterean_colab_gradio.model_management import ModelManagement
-from utiliterean_colab_gradio.ui import UI
-from utiliterean_colab_gradio.background_tasks import BackgroundTasks
-from utiliterean_colab_gradio.logger import logger
+from colabdrive.file_operations import FileOperations
+from colabdrive.cloud_storage import CloudStorage
+from colabdrive.model_management import ModelManagement
+from colabdrive.ui import UI
+from colabdrive.background_tasks import BackgroundTasks
+from colabdrive.logger import logger
 
 class Main:
     """Main class that orchestrates the application flow."""

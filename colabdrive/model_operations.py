@@ -3,7 +3,7 @@ import requests
 from typing import Optional
 from huggingface_hub import snapshot_download
 from git import Repo
-from utiliterean_colab_gradio.logger import logger
+from colabdrive.logger import logger
 
 class ModelOperations:
     """Class for handling model downloads from various sources."""
