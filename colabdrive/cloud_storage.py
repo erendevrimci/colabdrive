@@ -63,10 +63,10 @@ class CloudStorage:
         """
         try:
             s3_client = boto3.client('s3')
-            logger.log_info("S3 client initialized successfully.")
+            logger.info("S3 client initialized successfully.")
             return s3_client
         except Exception as e:
-            logger.log_error(f"Failed to initialize S3 client: {e}")
+            logger.error(f"Failed to initialize S3 client: {e}")
             raise
 
     def _initialize_dropbox(self) -> dropbox.Dropbox:
@@ -77,10 +77,10 @@ class CloudStorage:
         """
         try:
             dbx = dropbox.Dropbox('YOUR_ACCESS_TOKEN')  # Replace with your access token
-            logger.log_info("Dropbox client initialized successfully.")
+            logger.info("Dropbox client initialized successfully.")
             return dbx
         except Exception as e:
-            logger.log_error(f"Failed to initialize Dropbox client: {e}")
+            logger.error(f"Failed to initialize Dropbox client: {e}")
             raise
 
     def upload_to_drive(self, file: str) -> bool:
@@ -98,10 +98,10 @@ class CloudStorage:
             uploaded_file = self.drive.CreateFile(file_metadata)
             uploaded_file.SetContentMedia(media)
             uploaded_file.Upload()
-            logger.log_info(f"File uploaded to Google Drive successfully: {file}")
+            logger.info(f"File uploaded to Google Drive successfully: {file}")
             return True
         except Exception as e:
-            logger.log_error(f"Failed to upload file to Google Drive {file}: {e}")
+            logger.error(f"Failed to upload file to Google Drive {file}: {e}")
             return False
 
     def download_from_drive(self, file_id: str, destination: str) -> bool:
@@ -117,10 +117,10 @@ class CloudStorage:
         try:
             downloaded_file = self.drive.CreateFile({'id': file_id})
             downloaded_file.GetContentFile(destination)
-            logger.log_info(f"File downloaded from Google Drive successfully: {destination}")
+            logger.info(f"File downloaded from Google Drive successfully: {destination}")
             return True
         except Exception as e:
-            logger.log_error(f"Failed to download file from Google Drive {file_id}: {e}")
+            logger.error(f"Failed to download file from Google Drive {file_id}: {e}")
             return False
 
     def upload_to_s3(self, file: str, bucket_name: str) -> bool:
@@ -135,10 +135,10 @@ class CloudStorage:
         """
         try:
             self.s3_client.upload_file(file, bucket_name, file.split('/')[-1])
-            logger.log_info(f"File uploaded to S3 successfully: {file}")
+            logger.info(f"File uploaded to S3 successfully: {file}")
             return True
         except Exception as e:
-            logger.log_error(f"Failed to upload file to S3 {file}: {e}")
+            logger.error(f"Failed to upload file to S3 {file}: {e}")
             return False
 
     def download_from_s3(self, file_name: str, bucket_name: str, destination: str) -> bool:
@@ -154,10 +154,10 @@ class CloudStorage:
         """
         try:
             self.s3_client.download_file(bucket_name, file_name, destination)
-            logger.log_info(f"File downloaded from S3 successfully: {destination}")
+            logger.info(f"File downloaded from S3 successfully: {destination}")
             return True
         except Exception as e:
-            logger.log_error(f"Failed to download file from S3 {file_name}: {e}")
+            logger.error(f"Failed to download file from S3 {file_name}: {e}")
             return False
 
     def upload_to_dropbox(self, file: str) -> bool:
@@ -172,10 +172,10 @@ class CloudStorage:
         try:
             with open(file, 'rb') as f:
                 self.dropbox_client.files_upload(f.read(), '/' + file.split('/')[-1])
-            logger.log_info(f"File uploaded to Dropbox successfully: {file}")
+            logger.info(f"File uploaded to Dropbox successfully: {file}")
             return True
         except Exception as e:
-            logger.log_error(f"Failed to upload file to Dropbox {file}: {e}")
+            logger.error(f"Failed to upload file to Dropbox {file}: {e}")
             return False
 
     def download_from_dropbox(self, file_name: str, destination: str) -> bool:
@@ -192,8 +192,8 @@ class CloudStorage:
             with open(destination, 'wb') as f:
                 metadata, res = self.dropbox_client.files_download(path='/' + file_name)
                 f.write(res.content)
-            logger.log_info(f"File downloaded from Dropbox successfully: {destination}")
+            logger.info(f"File downloaded from Dropbox successfully: {destination}")
             return True
         except Exception as e:
-            logger.log_error(f"Failed to download file from Dropbox {file_name}: {e}")
+            logger.error(f"Failed to download file from Dropbox {file_name}: {e}")
             return False
