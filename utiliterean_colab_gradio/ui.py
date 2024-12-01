@@ -92,15 +92,15 @@ class UI:
             secondary_hue=colors.slate,
             neutral_hue=colors.gray,
             font=("Helvetica", "ui-sans-serif"),
-            spacing_size=gr.themes.Spacing(
-                xxs=2,
-                xs=4,
-                sm=6,
-                md=8,
-                lg=12,
-                xl=16,
-                xxl=20
-            ),
+            spacing_size={
+                "xxs": 2,
+                "xs": 4, 
+                "sm": 6,
+                "md": 8,
+                "lg": 12,
+                "xl": 16,
+                "xxl": 20
+            },
         )
         
         with gr.Blocks(
