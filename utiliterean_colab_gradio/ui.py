@@ -2,6 +2,8 @@
 
 import gradio as gr
 from typing import Optional
+from gradio.themes.utils import colors
+from gradio.themes import Base
 from utiliterean_colab_gradio.logger import logger
 from utiliterean_colab_gradio.file_operations import FileOperations
 from utiliterean_colab_gradio.drive_operations import DriveOperations
@@ -85,51 +87,131 @@ class UI:
 
     def create_interface(self) -> None:
         """Creates the user interface for the application."""
-        with gr.Blocks(title="Utiliterean Colab Assistant") as self.interface:
-            # Mount Drive Section
-            gr.Markdown("## Google Drive Operations")
-            with gr.Row():
-                self.mount_button = gr.Button("Mount Google Drive")
-                self.mount_status = gr.Textbox(label="Mount Status", interactive=False)
+        custom_theme = Base(
+            primary_hue=colors.blue,
+            secondary_hue=colors.slate,
+            neutral_hue=colors.gray,
+            font=("Helvetica", "ui-sans-serif"),
+            spacing_size=4,
+        )
+        
+        with gr.Blocks(
+            title="Utiliterean Colab Assistant",
+            theme=custom_theme,
+            css=".container { max-width: 1000px; margin: auto; padding: 2rem; }"
+        ) as self.interface:
+            gr.Markdown(
+                """
+                # 🚀 Utiliterean Colab Assistant
+                Your all-in-one tool for managing models and files in Colab
+                """
+            )
+            
+            with gr.Tabs():
+                with gr.Tab("📁 Drive Operations", id=1):
+                    with gr.Group():
+                        with gr.Row():
+                            self.mount_button = gr.Button("🔌 Mount Google Drive", variant="primary")
+                            self.mount_status = gr.Textbox(
+                                label="Mount Status",
+                                interactive=False,
+                                container=False
+                            )
+                        
+                        with gr.Row():
+                            with gr.Column(scale=3):
+                                self.list_files_input = gr.Textbox(
+                                    label="Directory Path",
+                                    value="/content/drive/My Drive",
+                                    container=True
+                                )
+                            with gr.Column(scale=1):
+                                self.list_files_button = gr.Button("📋 List Files", variant="secondary")
+                        
+                        self.files_list = gr.Textbox(
+                            label="Files",
+                            interactive=False,
+                            lines=10,
+                            container=True
+                        )
                 
-            with gr.Row():
-                self.list_files_input = gr.Textbox(label="Directory Path", value="/content/drive/My Drive")
-                self.list_files_button = gr.Button("List Files")
-                self.files_list = gr.Textbox(label="Files", interactive=False)
+                with gr.Tab("🤖 Model Operations", id=2):
+                    with gr.Group():
+                        gr.Markdown("### HuggingFace Downloads")
+                        with gr.Row():
+                            with gr.Column(scale=2):
+                                self.hf_model_name = gr.Textbox(
+                                    label="Model Name",
+                                    placeholder="e.g., bert-base-uncased"
+                                )
+                                self.hf_file_name = gr.Textbox(
+                                    label="File Name",
+                                    placeholder="e.g., config.json"
+                                )
+                            with gr.Column(scale=1):
+                                self.hf_download_button = gr.Button("🤗 Download from HuggingFace", variant="primary")
+                                self.hf_status = gr.Textbox(label="Status", interactive=False)
+                        
+                        gr.Markdown("### GitHub Repository")
+                        with gr.Row():
+                            with gr.Column(scale=2):
+                                self.github_url = gr.Textbox(
+                                    label="Repository URL",
+                                    placeholder="https://github.com/username/repo"
+                                )
+                            with gr.Column(scale=1):
+                                self.github_clone_button = gr.Button("📦 Clone Repository", variant="primary")
+                                self.github_status = gr.Textbox(label="Status", interactive=False)
+                        
+                        gr.Markdown("### CivitAI Models")
+                        with gr.Row():
+                            with gr.Column(scale=2):
+                                self.civitai_url = gr.Textbox(
+                                    label="Model URL",
+                                    placeholder="https://civitai.com/models/..."
+                                )
+                            with gr.Column(scale=1):
+                                self.civitai_download_button = gr.Button("⬇️ Download from CivitAI", variant="primary")
+                                self.civitai_status = gr.Textbox(label="Status", interactive=False)
                 
-            gr.Markdown("## Model Operations")
-            with gr.Row():
-                self.hf_model_name = gr.Textbox(label="HuggingFace Model Name")
-                self.hf_file_name = gr.Textbox(label="File Name")
-                self.hf_download_button = gr.Button("Download from HuggingFace")
-                self.hf_status = gr.Textbox(label="Download Status", interactive=False)
-                
-            with gr.Row():
-                self.github_url = gr.Textbox(label="GitHub Repository URL")
-                self.github_clone_button = gr.Button("Clone Repository")
-                self.github_status = gr.Textbox(label="Clone Status", interactive=False)
-                
-            with gr.Row():
-                self.civitai_url = gr.Textbox(label="CivitAI Model URL")
-                self.civitai_download_button = gr.Button("Download from CivitAI")
-                self.civitai_status = gr.Textbox(label="Download Status", interactive=False)
-                
-            gr.Markdown("## File Operations")
-            with gr.Row():
-                self.upload_file_input = gr.File(label="Upload File")
-                self.upload_button = gr.Button("Upload")
-                self.upload_status = gr.Textbox(label="Upload Status", interactive=False)
+                with gr.Tab("📄 File Operations", id=3):
+                    with gr.Group():
+                        with gr.Accordion("Upload", open=True):
+                            with gr.Row():
+                                with gr.Column(scale=2):
+                                    self.upload_file_input = gr.File(
+                                        label="Select File",
+                                        file_count="single"
+                                    )
+                                with gr.Column(scale=1):
+                                    self.upload_button = gr.Button("⬆️ Upload", variant="primary")
+                                    self.upload_status = gr.Textbox(label="Status", interactive=False)
 
-            with gr.Row():
-                self.download_file_input = gr.Textbox(label="File ID to Download")
-                self.download_button = gr.Button("Download")
-                self.download_status = gr.Textbox(label="Download Status", interactive=False)
+                        with gr.Accordion("Download", open=True):
+                            with gr.Row():
+                                with gr.Column(scale=2):
+                                    self.download_file_input = gr.Textbox(
+                                        label="File ID",
+                                        placeholder="Enter file ID to download"
+                                    )
+                                with gr.Column(scale=1):
+                                    self.download_button = gr.Button("⬇️ Download", variant="primary")
+                                    self.download_status = gr.Textbox(label="Status", interactive=False)
 
-            with gr.Row():
-                self.convert_file_input = gr.File(label="File to Convert")
-                self.output_format_input = gr.Textbox(label="Output Format")
-                self.convert_button = gr.Button("Convert")
-                self.convert_status = gr.Textbox(label="Conversion Status", interactive=False)
+                        with gr.Accordion("Convert", open=True):
+                            with gr.Row():
+                                with gr.Column(scale=2):
+                                    self.convert_file_input = gr.File(
+                                        label="Select File",
+                                        file_count="single"
+                                    )
+                                    self.output_format_input = gr.Textbox(
+                                        label="Output Format",
+                                        placeholder="e.g., pdf, jpg, png"
+                                    )
+                                with gr.Column(scale=1):
+                                    self.convert_button = gr.Button("🔄 Convert", variant="primary")
+                                    self.convert_status = gr.Textbox(label="Status", interactive=False)
 
             # Connect all the new buttons
             self.mount_button.click(self.mount_drive, outputs=self.mount_status)
