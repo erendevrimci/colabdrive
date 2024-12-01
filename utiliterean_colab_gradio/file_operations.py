@@ -16,8 +16,18 @@ class FileOperations:
 
     def __init__(self) -> None:
         """Initializes the FileOperations class."""
-        self.gauth = GoogleAuth()
-        self.drive = self._authenticate_drive()
+        self.gauth = None
+        self.drive = None
+        try:
+            self._setup_drive()
+        except Exception as e:
+            logger.log_error(f"Google Drive setup failed: {e}. Some features will be limited.")
+            
+    def _setup_drive(self) -> None:
+        """Sets up Google Drive authentication if credentials are available."""
+        if os.path.exists('client_secrets.json'):
+            self.gauth = GoogleAuth()
+            self.drive = self._authenticate_drive()
 
     def _authenticate_drive(self) -> GoogleDrive:
         """Authenticates and creates a Google Drive instance.
@@ -42,6 +52,10 @@ class FileOperations:
         Returns:
             bool: True if upload is successful, False otherwise.
         """
+        if not self.drive:
+            logger.log_error("Google Drive not configured. Upload not available.")
+            return False
+            
         try:
             file_metadata = {'title': os.path.basename(file)}
             media = MediaFileUpload(file, resumable=True)
@@ -64,6 +78,10 @@ class FileOperations:
         Returns:
             bool: True if download is successful, False otherwise.
         """
+        if not self.drive:
+            logger.log_error("Google Drive not configured. Download not available.")
+            return False
+            
         try:
             downloaded_file = self.drive.CreateFile({'id': file_id})
             with open(destination, 'wb') as f:
