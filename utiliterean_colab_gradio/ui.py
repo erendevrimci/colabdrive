@@ -4,6 +4,8 @@ import gradio as gr
 from typing import Optional
 from logger import logger
 from file_operations import FileOperations
+from drive_operations import DriveOperations
+from model_operations import ModelOperations
 
 class UI:
     """Class for creating the user interface and displaying progress and errors."""
