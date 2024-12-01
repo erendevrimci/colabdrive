@@ -7,7 +7,6 @@ huggingface-hub
 gitpython 
 kaggle-colab
 colab-everything
-#colab-preamble
 colab-convert
 colab-env
 colab-ssh
@@ -17,3 +16,6 @@ colab-host
 ssh-Colab
 Google-Colab-Transfer
 colab-dev-tools
+logger
+torch
+transformers
