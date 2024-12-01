@@ -13,8 +13,14 @@ A tool for managing Google Drive operations in Google Colab environments.
 
 ## Installation
 
+For local development:
 ```bash
 pip install colabdrive
+```
+
+When using in Google Colab, install with Colab extras:
+```bash
+pip install colabdrive[colab]
 ```
 
 ## Usage

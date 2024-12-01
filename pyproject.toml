@@ -21,7 +21,6 @@ classifiers = [
 ]
 
 dependencies = [
-    "google-colab",
     "google-auth",
     "google-auth-oauthlib",
     "google-auth-httplib2",
@@ -29,6 +28,11 @@ dependencies = [
     "boto3",
     "dropbox",
     "gradio",
+]
+
+[project.optional-dependencies]
+colab = [
+    "google-colab",
 ]
 
 [project.urls]
