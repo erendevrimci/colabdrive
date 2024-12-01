@@ -1,0 +1,39 @@
+
+classDiagram
+    class Main {
+        -FileOperations file_operations
+        -CloudStorage cloud_storage
+        -ModelManagement model_management
+        -UI ui
+        +run() None
+    }
+    class FileOperations {
+        +upload_file(file: str) bool
+        +download_file(file_id: str) bool
+        +convert_file(input_file: str, output_format: str) bool
+    }
+    class CloudStorage {
+        +upload_to_drive(file: str) bool
+        +download_from_drive(file_id: str) bool
+        +upload_to_s3(file: str) bool
+        +download_from_s3(file_id: str) bool
+        +upload_to_dropbox(file: str) bool
+        +download_from_dropbox(file_id: str) bool
+    }
+    class ModelManagement {
+        +load_model(model_name: str) bool
+        +manage_model(model_id: str) bool
+    }
+    class UI {
+        +create_interface() None
+        +show_progress(operation: str, progress: int) None
+        +show_error(message: str) None
+    }
+    class BackgroundTasks {
+        +run_in_background(task: Callable) None
+    }
+    Main --> FileOperations
+    Main --> CloudStorage
+    Main --> ModelManagement
+    Main --> UI
+    Main --> BackgroundTasks

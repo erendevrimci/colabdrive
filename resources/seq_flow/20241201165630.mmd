@@ -1,0 +1,22 @@
+
+sequenceDiagram
+    participant M as Main
+    participant FO as FileOperations
+    participant CS as CloudStorage
+    participant MM as ModelManagement
+    participant UI as UI
+    participant BT as BackgroundTasks
+    M->>UI: create_interface()
+    UI-->>M: interface_ready
+    M->>FO: upload_file(file)
+    FO->>CS: upload_to_drive(file)
+    CS-->>FO: upload_success
+    FO-->>M: upload_complete
+    M->>FO: convert_file(input_file, output_format)
+    FO-->>M: conversion_complete
+    M->>MM: load_model(model_name)
+    MM-->>M: model_loaded
+    M->>BT: run_in_background(task)
+    BT-->>M: task_started
+    M->>UI: show_progress(operation, progress)
+    M->>UI: show_error(message)

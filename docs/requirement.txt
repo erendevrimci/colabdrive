@@ -1,0 +1,12 @@
+Create a Python application that runs in Google Colab as a single-cell implementation, featuring:
+- Core functionality: file operations (upload/download/convert), cloud storage integration (Google Drive, S3, Dropbox), model management (HuggingFace, CivitAI), and data processing
+- Gradio-based UI with organized tabs and intuitive interface
+- Progress tracking and error handling for all operations
+- Google Drive mounting and seamless integration
+- Cloudflare tunnel for secure access
+- Modular structure for easy maintenance and feature addition
+- Comprehensive logging and status reporting
+- Background task handling for long operations
+- File integrity verification and validation
+- Batch operations support
+Technical stack: Python, Gradio, Google Colab, Cloudflare, with focus on single-environment execution and user-friendly interface.
