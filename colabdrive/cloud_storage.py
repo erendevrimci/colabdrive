@@ -21,20 +21,39 @@ class CloudStorage:
         self.s3_client = self._initialize_s3()
         self.dropbox_client = self._initialize_dropbox()
 
-    def _authenticate_drive(self) -> GoogleDrive:
+    def _authenticate_drive(self) -> Optional[GoogleDrive]:
         """Authenticates and creates a Google Drive instance.
 
         Returns:
-            GoogleDrive: Authenticated Google Drive instance.
+            Optional[GoogleDrive]: Authenticated Google Drive instance or None if authentication fails.
         """
         try:
             gauth = GoogleAuth()
-            gauth.LocalWebserverAuth()  # Creates a local webserver for authentication
-            logger.log_info("Google Drive authentication successful.")
+            # Try to load saved client credentials
+            gauth.LoadCredentialsFile("mycreds.txt")
+            if gauth.credentials is None:
+                # If no credentials available, try LocalWebserverAuth
+                try:
+                    gauth.LocalWebserverAuth()
+                except Exception as auth_error:
+                    logger.error(f"Local authentication failed: {auth_error}")
+                    # Fall back to command-line auth if local auth fails
+                    gauth.CommandLineAuth()
+            elif gauth.access_token_expired:
+                # Refresh them if expired
+                gauth.Refresh()
+            else:
+                # Initialize the saved creds
+                gauth.Authorize()
+            
+            # Save the current credentials
+            gauth.SaveCredentialsFile("mycreds.txt")
+            
+            logger.info("Google Drive authentication successful.")
             return GoogleDrive(gauth)
         except Exception as e:
-            logger.log_error(f"Google Drive authentication failed: {e}")
-            raise
+            logger.error(f"Google Drive authentication failed: {e}")
+            return None
 
     def _initialize_s3(self) -> boto3.client:
         """Initializes the S3 client.

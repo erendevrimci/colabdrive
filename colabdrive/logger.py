@@ -60,5 +60,9 @@ class Logger:
         """
         logging.debug(message)
 
-# Create a logger instance
-logger = Logger()
+# Create a logger instance with root logger
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler('app.log')
+handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+logger.addHandler(handler)
