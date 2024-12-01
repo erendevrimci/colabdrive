@@ -7,3 +7,5 @@
 2024-12-01 20:15:48,427 - INFO - HTTP Request: HEAD http://127.0.0.1:7860/ "HTTP/1.1 200 OK"
 2024-12-01 20:15:48,440 - INFO - HTTP Request: GET https://api.gradio.app/gradio-messaging/en "HTTP/1.1 200 OK"
 2024-12-01 20:15:49,021 - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2024-12-01 21:01:06,469 - INFO - Gradio interface launched.
+2024-12-01 21:01:06,471 - ERROR - Google Drive authentication failed: Invalid client secrets file ('Error opening file', 'client_secrets.json', 'No such file or directory', 2)
