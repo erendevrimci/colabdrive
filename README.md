@@ -23,6 +23,10 @@ When using in Google Colab, install with Colab extras:
 pip install colabdrive[colab]
 ```
 
+### Google Cloud Setup
+
+Before using ColabDrive, you'll need to set up Google Cloud credentials. See our [Google Cloud Setup Guide](docs/google_cloud_setup.md) for detailed instructions.
+
 ## Usage
 
 See the included Colab notebook for examples.
