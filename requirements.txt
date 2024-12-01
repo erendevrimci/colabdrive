@@ -1,5 +1,5 @@
-gradio==3.0.0
-pydrive==1.3.1
-dropbox==10.0.0
-boto3==1.20.0
-transformers==4.11.3
+gradio
+pydrive
+dropbox
+boto3
+transformers
