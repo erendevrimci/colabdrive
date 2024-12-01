@@ -1,4 +1,3 @@
-from google.colab import drive
 import os
 from typing import List, Optional
 from utiliterean_colab_gradio.logger import logger
@@ -10,11 +9,26 @@ class DriveOperations:
         """Initialize DriveOperations."""
         self.is_mounted = False
         self.mount_point = '/content/drive'
+        self.is_colab = self._check_colab_environment()
+        
+    def _check_colab_environment(self) -> bool:
+        """Check if running in Google Colab environment."""
+        try:
+            import google.colab
+            return True
+        except ImportError:
+            logger.log_info("Not running in Colab environment")
+            return False
         
     def mount_drive(self) -> bool:
         """Mount Google Drive in Colab."""
+        if not self.is_colab:
+            logger.log_warning("Drive mounting is only available in Google Colab")
+            return False
+            
         try:
             if not self.is_mounted:
+                from google.colab import drive
                 drive.mount(self.mount_point)
                 self.is_mounted = True
                 logger.log_info("Google Drive mounted successfully")
@@ -23,7 +37,7 @@ class DriveOperations:
             logger.log_error(f"Failed to mount Google Drive: {e}")
             return False
             
-    def list_files(self, directory: str = '/content/drive/My Drive') -> Optional[List[str]]:
+    def list_files(self, directory: str = '.') -> Optional[List[str]]:
         """List all files in a specified directory.
         
         Args:
