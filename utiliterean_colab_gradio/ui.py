@@ -15,7 +15,11 @@ class UI:
         self.interface: Optional[gr.Interface] = None
         self.file_operations = FileOperations()
         self.drive_operations = DriveOperations()
-        self.model_operations = ModelOperations()
+        try:
+            self.model_operations = ModelOperations()
+        except Exception as e:
+            logger.log_error(f"Failed to initialize ModelOperations: {e}")
+            self.model_operations = None
 
     def mount_drive(self) -> str:
         """Mount Google Drive and return status.
@@ -50,6 +54,8 @@ class UI:
         Returns:
             str: Status message indicating download result
         """
+        if not self.model_operations:
+            return "Model operations not available"
         result = self.model_operations.download_from_huggingface(model_name, file_name)
         return f"Downloaded to {result}" if result else "Download failed"
 
