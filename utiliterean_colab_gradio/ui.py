@@ -9,13 +9,43 @@ class UI:
     """Class for creating the user interface and displaying progress and errors."""
 
     def __init__(self) -> None:
-        """Initializes the UI class and the FileOperations instance."""
+        """Initializes the UI class and its components."""
         self.interface: Optional[gr.Interface] = None
         self.file_operations = FileOperations()
+        self.drive_operations = DriveOperations()
+        self.model_operations = ModelOperations()
 
     def create_interface(self) -> None:
         """Creates the user interface for the application."""
         with gr.Blocks() as self.interface:
+            # Mount Drive Section
+            gr.Markdown("## Google Drive Operations")
+            with gr.Row():
+                self.mount_button = gr.Button("Mount Google Drive")
+                self.mount_status = gr.Textbox(label="Mount Status", interactive=False)
+                
+            with gr.Row():
+                self.list_files_input = gr.Textbox(label="Directory Path", value="/content/drive/My Drive")
+                self.list_files_button = gr.Button("List Files")
+                self.files_list = gr.Textbox(label="Files", interactive=False)
+                
+            gr.Markdown("## Model Operations")
+            with gr.Row():
+                self.hf_model_name = gr.Textbox(label="HuggingFace Model Name")
+                self.hf_file_name = gr.Textbox(label="File Name")
+                self.hf_download_button = gr.Button("Download from HuggingFace")
+                self.hf_status = gr.Textbox(label="Download Status", interactive=False)
+                
+            with gr.Row():
+                self.github_url = gr.Textbox(label="GitHub Repository URL")
+                self.github_clone_button = gr.Button("Clone Repository")
+                self.github_status = gr.Textbox(label="Clone Status", interactive=False)
+                
+            with gr.Row():
+                self.civitai_url = gr.Textbox(label="CivitAI Model URL")
+                self.civitai_download_button = gr.Button("Download from CivitAI")
+                self.civitai_status = gr.Textbox(label="Download Status", interactive=False)
+                
             gr.Markdown("## File Operations")
             with gr.Row():
                 self.upload_file_input = gr.File(label="Upload File")
@@ -33,6 +63,20 @@ class UI:
                 self.convert_button = gr.Button("Convert")
                 self.convert_status = gr.Textbox(label="Conversion Status", interactive=False)
 
+            # Connect all the new buttons
+            self.mount_button.click(self.mount_drive, outputs=self.mount_status)
+            self.list_files_button.click(self.list_directory, inputs=self.list_files_input, outputs=self.files_list)
+            self.hf_download_button.click(self.download_from_huggingface, 
+                                        inputs=[self.hf_model_name, self.hf_file_name],
+                                        outputs=self.hf_status)
+            self.github_clone_button.click(self.clone_github_repo,
+                                         inputs=self.github_url,
+                                         outputs=self.github_status)
+            self.civitai_download_button.click(self.download_from_civitai,
+                                             inputs=self.civitai_url,
+                                             outputs=self.civitai_status)
+            
+            # Original buttons
             self.upload_button.click(self.upload_file, inputs=self.upload_file_input, outputs=self.upload_status)
             self.download_button.click(self.download_file, inputs=self.download_file_input, outputs=self.download_status)
             self.convert_button.click(self.convert_file, inputs=[self.convert_file_input, self.output_format_input], outputs=self.convert_status)
