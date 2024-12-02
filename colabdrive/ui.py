@@ -292,7 +292,12 @@ class UI:
     def launch(self) -> None:
         """Launches the Gradio interface."""
         if self.interface is not None:
-            self.interface.launch()
+            self.interface.launch(
+                server_name="0.0.0.0",
+                server_port=7860,
+                share=True,
+                allowed_paths=["/content", "/content/drive"]
+            )
             logger.log_info("Gradio interface launched.")
 
 # Create a UI instance and launch the interface
