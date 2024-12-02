@@ -28,37 +28,7 @@ class Logger:
         )
         logging.info("Logging is set up.")
 
-    def log_info(self, message: str) -> None:
-        """Logs an informational message.
-
-        Args:
-            message (str): The message to log.
-        """
-        logging.info(message)
-
-    def log_warning(self, message: str) -> None:
-        """Logs a warning message.
-
-        Args:
-            message (str): The message to log.
-        """
-        logging.warning(message)
-
-    def log_error(self, message: str) -> None:
-        """Logs an error message.
-
-        Args:
-            message (str): The message to log.
-        """
-        logging.error(message)
-
-    def log_debug(self, message: str) -> None:
-        """Logs a debug message.
-
-        Args:
-            message (str): The message to log.
-        """
-        logging.debug(message)
+    # Remove custom log methods since we're using standard logging
 
 # Create a logger instance with root logger
 logger = logging.getLogger()

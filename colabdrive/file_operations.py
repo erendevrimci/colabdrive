@@ -21,7 +21,7 @@ class FileOperations:
         try:
             self._setup_drive()
         except Exception as e:
-            logger.log_error(f"Google Drive setup failed: {e}. Some features will be limited.")
+            logger.error(f"Google Drive setup failed: {e}. Some features will be limited.")
             
     def _setup_drive(self) -> None:
         """Sets up Google Drive authentication if credentials are available."""
@@ -40,7 +40,7 @@ class FileOperations:
             logger.log_info("Google Drive authentication successful.")
             return GoogleDrive(self.gauth)
         except Exception as e:
-            logger.log_error(f"Google Drive authentication failed: {e}")
+            logger.error(f"Google Drive authentication failed: {e}")
             raise
 
     def upload_file(self, file: str) -> bool:

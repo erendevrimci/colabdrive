@@ -183,7 +183,20 @@ echo "Creating client secrets file..."
 if [ -f ~/.config/gcloud/application_default_credentials.json ]; then
     # Validate JSON format
     if python3 -c "import json; json.load(open('~/.config/gcloud/application_default_credentials.json'));" 2>/dev/null; then
-        cp ~/.config/gcloud/application_default_credentials.json client_secrets.json
+        # Create proper client_secrets.json format
+        cat > client_secrets.json << EOL
+        {
+            "installed": {
+                "client_id": "$(jq -r .client_id ~/.config/gcloud/application_default_credentials.json)",
+                "project_id": "$PROJECT_ID",
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                "client_secret": "$(jq -r .client_secret ~/.config/gcloud/application_default_credentials.json)",
+                "redirect_uris": ["http://localhost:8080/"]
+            }
+        }
+        EOL
         echo "Credentials setup complete!"
     else
         echo "Regenerating credentials file..."
