@@ -70,6 +70,8 @@ class UI:
         Returns:
             str: Status message indicating clone result
         """
+        if not self.model_operations:
+            return "Model operations not available - initialization failed"
         result = self.model_operations.clone_github_repo(repo_url)
         return f"Cloned to {result}" if result else "Clone failed"
 
@@ -82,6 +84,8 @@ class UI:
         Returns:
             str: Status message indicating download result
         """
+        if not self.model_operations:
+            return "Model operations not available - initialization failed"
         result = self.model_operations.download_civitai_model(model_url)
         return f"Downloaded to {result}" if result else "Download failed"
 

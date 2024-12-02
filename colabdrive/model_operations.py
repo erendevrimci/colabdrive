@@ -4,6 +4,7 @@ from typing import Optional
 from huggingface_hub import snapshot_download
 from git import Repo
 from colabdrive.logger import logger
+from colabdrive.config import config
 
 class ModelOperations:
     """Class for handling model downloads from various sources."""
