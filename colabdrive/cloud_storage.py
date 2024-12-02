@@ -60,7 +60,7 @@ class CloudStorage:
                     'approval_prompt': 'force',
                     'redirect_uri': redirect_uri
                 })
-                gauth.LocalWebserverAuth(port=8080, host='127.0.0.1')
+                gauth.LocalWebserverAuth()
             elif gauth.access_token_expired:
                 try:
                     gauth.Refresh()
@@ -72,7 +72,7 @@ class CloudStorage:
                         'approval_prompt': 'force',
                         'redirect_uri': redirect_uri
                     })
-                    gauth.LocalWebserverAuth(port=8080, host='127.0.0.1')
+                    gauth.LocalWebserverAuth()
             else:
                 gauth.Authorize()
             
