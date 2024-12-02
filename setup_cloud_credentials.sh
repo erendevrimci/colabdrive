@@ -108,18 +108,33 @@ done
 
 # Create OAuth credentials
 echo "Creating OAuth credentials..."
-gcloud auth application-default login
+gcloud auth application-default login --no-launch-browser
 
 # Ensure credentials directory exists
 mkdir -p ~/.config/gcloud
 
-# Create client secrets file
+# Validate and create client secrets file
 echo "Creating client secrets file..."
 if [ -f ~/.config/gcloud/application_default_credentials.json ]; then
-    cp ~/.config/gcloud/application_default_credentials.json client_secrets.json
-    echo "Credentials setup complete!"
+    # Validate JSON format
+    if python3 -c "import json; json.load(open('~/.config/gcloud/application_default_credentials.json'));" 2>/dev/null; then
+        cp ~/.config/gcloud/application_default_credentials.json client_secrets.json
+        echo "Credentials setup complete!"
+    else
+        echo "Regenerating credentials file..."
+        rm -f ~/.config/gcloud/application_default_credentials.json
+        gcloud auth application-default login --no-launch-browser
+        cp ~/.config/gcloud/application_default_credentials.json client_secrets.json
+    fi
 else
-    echo "Error: Failed to create credentials file"
+    echo "No credentials file found, creating new one..."
+    gcloud auth application-default login --no-launch-browser
+    cp ~/.config/gcloud/application_default_credentials.json client_secrets.json
+fi
+
+# Final validation
+if [ ! -s client_secrets.json ]; then
+    echo "Error: Failed to create valid credentials file"
     exit 1
 fi
 
