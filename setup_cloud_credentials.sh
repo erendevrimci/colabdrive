@@ -57,7 +57,7 @@ if [ -z "$PROJECT_ID" ]; then
 
     max_retries=3
     retry_count=0
-    retry_delay=60  # seconds
+    retry_delay=3  # seconds
 
     while [ $retry_count -lt $max_retries ]; do
         if gcloud projects create $PROJECT_ID --name="ColabDrive"; then
@@ -87,13 +87,13 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 
 # Wait for IAM permissions to propagate
 echo "Waiting for permissions to propagate..."
-sleep 60
+sleep 15
 
 # Enable core APIs first
 echo "Enabling core APIs..."
 gcloud services enable serviceusage.googleapis.com --quiet || true
 gcloud services enable servicemanagement.googleapis.com --quiet || true
-sleep 30
+sleep 10
 
 # Verify core services are enabled
 echo "Verifying core services..."
@@ -144,7 +144,7 @@ for api in "${apis[@]}"; do
     if ! enable_api $api; then
         echo "Warning: Failed to enable $api"
     fi
-    sleep 15  # Wait between APIs
+    sleep 10  # Wait between APIs
 done
 
 # Create OAuth credentials
