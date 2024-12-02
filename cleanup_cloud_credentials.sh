@@ -31,16 +31,38 @@ if [ ! -z "$CURRENT_PROJECT" ] && [ "$CURRENT_PROJECT" != "None" ]; then
     # Ensure we're authenticated before proceeding
     gcloud auth login --quiet || true
     
-    # Disable APIs
+    # Disable APIs with error handling
     echo "Disabling APIs..."
-    gcloud services disable drive.googleapis.com --force
-    gcloud services disable cloudresourcemanager.googleapis.com --force
-    gcloud services disable oauth2.googleapis.com --force
-    gcloud services disable iap.googleapis.com --force
+    apis=(
+        "drive.googleapis.com"
+        "iap.googleapis.com"
+        "oauth2.googleapis.com"
+        "cloudresourcemanager.googleapis.com"
+    )
+
+    for api in "${apis[@]}"; do
+        echo "Attempting to disable $api..."
+        gcloud services disable $api --force 2>/dev/null || true
+        sleep 5
+    done
     
-    # Delete project
+    # Delete project with retry
     echo "Deleting project: $CURRENT_PROJECT"
-    gcloud projects delete $CURRENT_PROJECT --quiet
+    max_retries=3
+    retry_count=0
+    while [ $retry_count -lt $max_retries ]; do
+        if gcloud projects delete $CURRENT_PROJECT --quiet; then
+            break
+        else
+            retry_count=$((retry_count + 1))
+            if [ $retry_count -eq $max_retries ]; then
+                echo "Warning: Failed to delete project after $max_retries attempts"
+                break
+            fi
+            echo "Project deletion failed. Retrying in 10 seconds..."
+            sleep 10
+        fi
+    done
 fi
 
 # Clear gcloud config
