@@ -60,8 +60,10 @@ PROJECT_ID="colabdrive-test-$(date +%Y%m%d)"
 echo "Setting up project ${PROJECT_ID}..."
 create_project $PROJECT_ID || exit 1
 
-# Set the project as active
+# Set the project as active and update quota project
+echo "Setting active project and quota project..."
 gcloud config set project $PROJECT_ID
+gcloud auth application-default set-quota-project $PROJECT_ID
 
 # Check if user has owner role
 echo "Checking project permissions..."
