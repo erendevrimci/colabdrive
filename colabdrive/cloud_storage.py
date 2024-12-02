@@ -34,52 +34,28 @@ class CloudStorage:
         """
         try:
             gauth = GoogleAuth()
+            
+            # Set up authentication settings
             gauth.settings['get_refresh_token'] = True
-            gauth.settings['oauth_scope'] = [
-                'https://www.googleapis.com/auth/drive',
-                (f'https://www.googleapis.com/auth/cloud-platform'
-                 f'.projects.{self.project_id}')
-            ]
+            gauth.settings['oauth_scope'] = ['https://www.googleapis.com/auth/drive']
             gauth.settings['client_config_file'] = 'client_secrets.json'
             
-            # Create credentials directory if it doesn't exist
+            # Create credentials directory in user's home
             creds_dir = os.path.join(os.path.expanduser('~'), '.colabdrive')
             creds_file = os.path.join(creds_dir, 'mycreds.txt')
             os.makedirs(creds_dir, exist_ok=True)
             
-            # Try to load saved client credentials
+            # Try to load existing credentials
             gauth.LoadCredentialsFile(creds_file)
             
             if gauth.credentials is None:
-                # Configure for web application
-                gauth.GetFlow()
-                gauth.flow.params.update({
-                    'access_type': 'offline',
-                    'approval_prompt': 'force',
-                    'prompt': 'consent'
-                })
-                # Use local webserver auth with explicit redirect URI
-                redirect_uri = 'http://127.0.0.1:8080/'
-                gauth.GetFlow()
-                gauth.flow.params.update({
-                    'access_type': 'offline',
-                    'approval_prompt': 'force',
-                    'redirect_uri': redirect_uri
-                })
-                gauth.LocalWebserverAuth()
+                # No credentials found, start new authentication
+                gauth.LocalWebserverAuth(port_numbers=[8080])
             elif gauth.access_token_expired:
-                try:
-                    gauth.Refresh()
-                except Exception:
-                    redirect_uri = 'http://127.0.0.1:8080/'
-                    gauth.GetFlow()
-                    gauth.flow.params.update({
-                        'access_type': 'offline',
-                        'approval_prompt': 'force',
-                        'redirect_uri': redirect_uri
-                    })
-                    gauth.LocalWebserverAuth()
+                # Refresh expired token
+                gauth.Refresh()
             else:
+                # Reauthorize with existing credentials
                 gauth.Authorize()
             
             # Save the current credentials

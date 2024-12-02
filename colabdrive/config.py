@@ -24,7 +24,7 @@ class Config:
                 "model_path": os.path.join(os.path.expanduser('~'), 'models'),
                 "drive_mount_point": None,
                 "server_name": "127.0.0.1",
-                "server_port": 8080,  # Must match OAuth redirect URI port
+                "server_port": 8080,  # Fixed port for OAuth redirect
                 "allowed_paths": [os.path.expanduser('~')],
                 "privacy_policy_url": "http://127.0.0.1:8080/privacy_policy.html",
                 "project_id": "colabdrive-test-20241202",
