@@ -62,7 +62,15 @@ sleep 60
 # Enable core APIs first
 echo "Enabling core APIs..."
 gcloud services enable serviceusage.googleapis.com --quiet || true
+gcloud services enable servicemanagement.googleapis.com --quiet || true
 sleep 30
+
+# Verify core services are enabled
+echo "Verifying core services..."
+if ! gcloud services list --enabled | grep -q "serviceusage.googleapis.com"; then
+    echo "Error: Failed to enable core services"
+    exit 1
+fi
 
 # Enable APIs with retries
 enable_api() {
@@ -96,6 +104,7 @@ apis=(
     "cloudresourcemanager.googleapis.com"
     "serviceusage.googleapis.com"
     "iam.googleapis.com"
+    "servicemanagement.googleapis.com"
     "oauth2.googleapis.com"
     "drive.googleapis.com"
     "iap.googleapis.com"
