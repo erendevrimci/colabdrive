@@ -25,7 +25,8 @@ class Config:
                 "drive_mount_point": None,
                 "server_name": "127.0.0.1",
                 "server_port": 8080,  # Must match OAuth redirect URI port
-                "allowed_paths": [os.path.expanduser('~')]
+                "allowed_paths": [os.path.expanduser('~')],
+                "privacy_policy_url": "https://your-domain.com/privacy_policy.html"
             },
             "colab": {
                 "model_path": "/content/drive/My Drive/models",

@@ -27,6 +27,7 @@ This guide will walk you through the process of obtaining Google Cloud credentia
    - Click "Configure Consent Screen"
    - Choose "External" user type
    - Fill in the required information (app name, user support email, developer contact)
+   - Add your privacy policy URL (https://your-domain.com/privacy_policy.html)
    - For scopes, add Google Drive API scopes
    - Add your email as a test user
    - Save and continue
