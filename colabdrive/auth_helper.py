@@ -3,12 +3,15 @@ from typing import Optional
 from pydrive.auth import GoogleAuth
 from colabdrive.logger import logger
 
+from colabdrive.config import config
+
 def verify_credentials() -> bool:
     """Verify if credentials file exists and is valid.
     
     Returns:
         bool: True if credentials are valid, False otherwise
     """
+    oauth_redirect_uri = config.get("oauth_redirect_uri")
     try:
         creds_dir = os.path.join(os.path.expanduser('~'), '.colabdrive')
         creds_file = os.path.join(creds_dir, 'mycreds.txt')

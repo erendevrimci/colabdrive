@@ -131,7 +131,21 @@ done
 
 # Create OAuth credentials
 echo "Creating OAuth credentials..."
-gcloud auth application-default login --no-launch-browser
+gcloud auth application-default login --no-launch-browser \
+    --redirect-uri=http://127.0.0.1:8080/
+
+# Configure OAuth consent screen
+echo "Configuring OAuth consent screen..."
+gcloud services enable iap.googleapis.com
+gcloud iap oauth-brand add \
+    --application_title="ColabDrive" \
+    --support_email="$EMAIL"
+
+# Add authorized redirect URI
+echo "Adding authorized redirect URI..."
+gcloud iap oauth-client add \
+    --display_name="ColabDrive Local" \
+    --redirect_uris="http://127.0.0.1:8080/"
 
 # Ensure credentials directory exists
 mkdir -p ~/.config/gcloud

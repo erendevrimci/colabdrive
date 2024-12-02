@@ -23,8 +23,9 @@ class Config:
             "local": {
                 "model_path": os.path.join(os.path.expanduser('~'), 'models'),
                 "drive_mount_point": None,
-                "server_name": "localhost",
-                "server_port": 8080,  # Fixed port for OAuth redirect
+                "server_name": "127.0.0.1",
+                "server_port": 8080,
+                "oauth_redirect_uri": "http://127.0.0.1:8080/",
                 "allowed_paths": [os.path.expanduser('~')],
                 "privacy_policy_url": "http://127.0.0.1:8080/privacy_policy.html",
                 "project_id": "colabdrive-test-20241202",
@@ -34,8 +35,9 @@ class Config:
             "colab": {
                 "model_path": "/content/drive/My Drive/models",
                 "drive_mount_point": "/content/drive",
-                "server_name": "127.0.0.1",
+                "server_name": "127.0.0.1", 
                 "server_port": 8080,
+                "oauth_redirect_uri": "http://127.0.0.1:8080/",
                 "allowed_paths": ["/content", "/content/drive"]
             }
         }
