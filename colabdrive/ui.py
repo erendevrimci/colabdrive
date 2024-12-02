@@ -307,24 +307,26 @@ class UI:
             
         from colabdrive.config import config
         
-        # Try a range of ports starting from default
-        start_port = config.get("server_port", 7860)
-        max_attempts = 20  # Try more ports
+        # Define port range
+        start_port = 7860
+        max_attempts = 20
         
-        for attempt_port in range(start_port, start_port + max_attempts):
+        # Try launching on different ports
+        for port in range(start_port, start_port + max_attempts):
             try:
                 self.interface.launch(
-                    server_name=config.get("server_name", "0.0.0.0"),
-                    server_port=attempt_port,
-                    share=True,
-                    allowed_paths=config.get("allowed_paths", []),
-                    prevent_thread_lock=True  # Allow for cleanup if needed
+                    server_name="0.0.0.0",  # Allow external connections
+                    server_port=port,
+                    share=True,  # Enable sharing
+                    prevent_thread_lock=True,
+                    quiet=True  # Reduce noise in logs
                 )
-                logger.info(f"Gradio interface launched on port {attempt_port}")
-                break
+                logger.info(f"Gradio interface launched successfully on port {port}")
+                return
             except OSError as e:
-                if attempt_port == start_port + max_attempts - 1:
-                    logger.error(f"Failed to find available port after {max_attempts} attempts")
-                    raise
+                logger.debug(f"Port {port} is busy, trying next port")
                 continue
+                
+        # If we get here, all ports were busy
+        raise OSError(f"Could not find an available port in range {start_port}-{start_port + max_attempts}")
 
