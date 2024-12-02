@@ -22,11 +22,19 @@ fi
 if [ -z "$PROJECT_ID" ]; then
     # Prompt for email only if creating new project
     read -p "Enter your email address: " EMAIL
+    
+    # Validate email format
+    if [[ ! "$EMAIL" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
+        echo "Invalid email format"
+        exit 1
+    fi
+fi
 
 # Validate email format
 if [[ ! "$EMAIL" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
     echo "Invalid email format"
     exit 1
+fi
 fi
 
 # Login to Google Cloud
