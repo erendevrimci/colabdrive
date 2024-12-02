@@ -9,8 +9,8 @@ import mimetypes
 from PIL import Image
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
+from pydrive2.auth import GoogleAuth
+from pydrive2.drive import GoogleDrive
 
 # Import the logger instance from logger.py
 from colabdrive.logger import logger

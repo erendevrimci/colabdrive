@@ -304,12 +304,21 @@ class UI:
         """Launches the Gradio interface."""
         if self.interface is not None:
             from colabdrive.config import config
-            self.interface.launch(
-                server_name=config.get("server_name"),
-                server_port=config.get("server_port"),
-                share=True,
-                allowed_paths=config.get("allowed_paths")
-            )
+            # Try a range of ports if default is busy
+            port = config.get("server_port", 7860)
+            for attempt_port in range(port, port + 10):
+                try:
+                    self.interface.launch(
+                        server_name=config.get("server_name", "0.0.0.0"),
+                        server_port=attempt_port,
+                        share=True,
+                        allowed_paths=config.get("allowed_paths", [])
+                    )
+                    break
+                except OSError:
+                    if attempt_port == port + 9:
+                        raise
+                    continue
             logger.info("Gradio interface launched.")
 
 # Create a UI instance and launch the interface
