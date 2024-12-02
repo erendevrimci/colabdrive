@@ -30,13 +30,6 @@ if [ -z "$PROJECT_ID" ]; then
     fi
 fi
 
-# Validate email format
-if [[ ! "$EMAIL" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
-    echo "Invalid email format"
-    exit 1
-fi
-fi
-
 # Login to Google Cloud
 echo "Logging in to Google Cloud..."
 gcloud auth login
