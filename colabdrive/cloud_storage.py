@@ -17,6 +17,9 @@ class CloudStorage:
 
     def __init__(self) -> None:
         """Initializes the CloudStorage class."""
+        self.project_id = config.get('project_id')
+        if not self.project_id:
+            raise ValueError("Project ID not configured")
         self.drive = self._authenticate_drive()
         self.s3_client = self._initialize_s3()
         self.dropbox_client = self._initialize_dropbox()
@@ -30,7 +33,10 @@ class CloudStorage:
         try:
             gauth = GoogleAuth()
             gauth.settings['get_refresh_token'] = True
-            gauth.settings['oauth_scope'] = ['https://www.googleapis.com/auth/drive']
+            gauth.settings['oauth_scope'] = [
+                'https://www.googleapis.com/auth/drive',
+                f'https://www.googleapis.com/auth/cloud-platform.projects.{self.project_id}'
+            ]
             gauth.settings['client_config_file'] = 'client_secrets.json'
             
             # Try to load saved client credentials
