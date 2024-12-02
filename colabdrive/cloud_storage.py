@@ -1,4 +1,5 @@
 ## cloud_storage.py
+import os
 from typing import Optional
 import boto3
 import dropbox
@@ -41,8 +42,13 @@ class CloudStorage:
             ]
             gauth.settings['client_config_file'] = 'client_secrets.json'
             
+            # Create credentials directory if it doesn't exist
+            creds_dir = os.path.join(os.path.expanduser('~'), '.colabdrive')
+            creds_file = os.path.join(creds_dir, 'mycreds.txt')
+            os.makedirs(creds_dir, exist_ok=True)
+            
             # Try to load saved client credentials
-            gauth.LoadCredentialsFile("mycreds.txt")
+            gauth.LoadCredentialsFile(creds_file)
             
             if gauth.credentials is None:
                 # Configure for web application
@@ -77,7 +83,7 @@ class CloudStorage:
                 gauth.Authorize()
             
             # Save the current credentials
-            gauth.SaveCredentialsFile("mycreds.txt")
+            gauth.SaveCredentialsFile(creds_file)
             
             logger.info("Google Drive authentication successful.")
             return GoogleDrive(gauth)
