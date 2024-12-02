@@ -94,6 +94,8 @@ enable_api() {
 # Enable APIs in specific order
 apis=(
     "cloudresourcemanager.googleapis.com"
+    "serviceusage.googleapis.com"
+    "iam.googleapis.com"
     "oauth2.googleapis.com"
     "drive.googleapis.com"
     "iap.googleapis.com"
@@ -132,11 +134,24 @@ else
     cp ~/.config/gcloud/application_default_credentials.json client_secrets.json
 fi
 
-# Final validation
+# Final validation and setup
 if [ ! -s client_secrets.json ]; then
     echo "Error: Failed to create valid credentials file"
     exit 1
 fi
+
+# Create .colabdrive config directory
+mkdir -p ~/.colabdrive
+
+# Copy credentials to .colabdrive
+cp client_secrets.json ~/.colabdrive/
+echo "Project ID: $PROJECT_ID" > ~/.colabdrive/project_info.txt
+
+echo "Setup complete! Credentials saved to:"
+echo "1. ./client_secrets.json"
+echo "2. ~/.colabdrive/client_secrets.json"
+echo "3. ~/.config/gcloud/application_default_credentials.json"
+echo "Project ID: $PROJECT_ID"
 
 echo "Setup complete! client_secrets.json has been created."
 echo "Project ID: $PROJECT_ID"
