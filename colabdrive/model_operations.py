@@ -11,7 +11,7 @@ class ModelOperations:
     def __init__(self) -> None:
         """Initialize ModelOperations."""
         self.is_colab = self._check_colab_environment()
-        self.default_path = self._get_default_path()
+        self.default_path = config.get("model_path")
         os.makedirs(self.default_path, exist_ok=True)
         self.chunk_size = 8192
         logger.info(f"Model operations initialized with path: {self.default_path}")
@@ -25,12 +25,6 @@ class ModelOperations:
             logger.info("Not running in Colab environment")
             return False
             
-    def _get_default_path(self) -> str:
-        """Get the default path for model storage based on environment."""
-        if self.is_colab:
-            return os.path.join('/content/drive/My Drive', 'models')
-        return os.path.join(os.path.expanduser('~'), 'models')
-        
     def download_from_huggingface(self, model_name: str, file_name: str) -> Optional[str]:
         """Download a specific file from HuggingFace."""
         try:
