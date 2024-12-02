@@ -11,22 +11,20 @@ fi
 
 # Check for existing setup
 CURRENT_PROJECT=$(gcloud config get-value project)
+# Always get email first
+read -p "Enter your email address: " EMAIL
+    
+# Validate email format
+if [[ ! "$EMAIL" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
+    echo "Invalid email format"
+    exit 1
+fi
+
 if [ ! -z "$CURRENT_PROJECT" ] && [ "$CURRENT_PROJECT" != "None" ]; then
     read -p "Existing project found ($CURRENT_PROJECT). Do you want to use it? (y/n): " USE_EXISTING
     if [[ $USE_EXISTING =~ ^[Yy]$ ]]; then
         PROJECT_ID=$CURRENT_PROJECT
         echo "Using existing project: $PROJECT_ID"
-    fi
-fi
-
-if [ -z "$PROJECT_ID" ]; then
-    # Prompt for email only if creating new project
-    read -p "Enter your email address: " EMAIL
-    
-    # Validate email format
-    if [[ ! "$EMAIL" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
-        echo "Invalid email format"
-        exit 1
     fi
 fi
 
