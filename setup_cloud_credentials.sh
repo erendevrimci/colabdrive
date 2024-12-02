@@ -11,14 +11,32 @@ fi
 
 # Check for existing setup
 CURRENT_PROJECT=$(gcloud config get-value project)
-# Always get email first
-read -p "Enter your email address: " EMAIL
+
+# Email validation function
+validate_email() {
+    local email="$1"
+    if [[ ! "$email" =~ ^[[:alnum:]._%+-]+@[[:alnum:].-]+\.[[:alpha:]]{2,}$ ]]; then
+        return 1
+    fi
+    return 0
+}
+
+# Get and validate email with retry
+while true; do
+    echo "Please enter your email address (or Ctrl+C to exit):"
+    read -r EMAIL
     
-# Validate email format
-if [[ ! "$EMAIL" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
-    echo "Invalid email format"
-    exit 1
-fi
+    # Remove any whitespace
+    EMAIL=$(echo "$EMAIL" | tr -d '[:space:]')
+    
+    if validate_email "$EMAIL"; then
+        echo "Email format validated: $EMAIL"
+        break
+    else
+        echo "Invalid email format. Please enter a valid email address."
+        echo "Example: username@domain.com"
+    fi
+done
 
 if [ ! -z "$CURRENT_PROJECT" ] && [ "$CURRENT_PROJECT" != "None" ]; then
     read -p "Existing project found ($CURRENT_PROJECT). Do you want to use it? (y/n): " USE_EXISTING
