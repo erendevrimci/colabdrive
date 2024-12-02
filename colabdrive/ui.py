@@ -292,6 +292,7 @@ class UI:
     def launch(self) -> None:
         """Launches the Gradio interface."""
         if self.interface is not None:
+            from colabdrive.config import config
             self.interface.launch(
                 server_name=config.get("server_name"),
                 server_port=config.get("server_port"),

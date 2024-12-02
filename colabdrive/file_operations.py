@@ -37,7 +37,7 @@ class FileOperations:
         """
         try:
             self.gauth.LocalWebserverAuth()  # Creates a local webserver for authentication
-            logger.log_info("Google Drive authentication successful.")
+            logger.info("Google Drive authentication successful.")
             return GoogleDrive(self.gauth)
         except Exception as e:
             logger.error(f"Google Drive authentication failed: {e}")
@@ -53,7 +53,7 @@ class FileOperations:
             bool: True if upload is successful, False otherwise.
         """
         if not self.drive:
-            logger.log_error("Google Drive not configured. Upload not available.")
+            logger.error("Google Drive not configured. Upload not available.")
             return False
             
         try:
@@ -62,10 +62,10 @@ class FileOperations:
             uploaded_file = self.drive.CreateFile(file_metadata)
             uploaded_file.SetContentMedia(media)
             uploaded_file.Upload()
-            logger.log_info(f"File uploaded successfully: {file}")
+            logger.info(f"File uploaded successfully: {file}")
             return True
         except Exception as e:
-            logger.log_error(f"Failed to upload file {file}: {e}")
+            logger.error(f"Failed to upload file {file}: {e}")
             return False
 
     def download_file(self, file_id: str, destination: str) -> bool:
@@ -79,7 +79,7 @@ class FileOperations:
             bool: True if download is successful, False otherwise.
         """
         if not self.drive:
-            logger.log_error("Google Drive not configured. Download not available.")
+            logger.error("Google Drive not configured. Download not available.")
             return False
             
         try:
@@ -89,11 +89,11 @@ class FileOperations:
                 done = False
                 while done is False:
                     status, done = downloader.Next_chunk()
-                    logger.log_info(f"Download progress: {int(status.progress() * 100)}%")
-            logger.log_info(f"File downloaded successfully: {destination}")
+                    logger.info(f"Download progress: {int(status.progress() * 100)}%")
+            logger.info(f"File downloaded successfully: {destination}")
             return True
         except Exception as e:
-            logger.log_error(f"Failed to download file {file_id}: {e}")
+            logger.error(f"Failed to download file {file_id}: {e}")
             return False
 
     def convert_file(self, input_file: str, output_format: str) -> bool:
@@ -108,10 +108,10 @@ class FileOperations:
         """
         try:
             # Placeholder for conversion logic
-            logger.log_info(f"Converting file {input_file} to {output_format}.")
+            logger.info(f"Converting file {input_file} to {output_format}.")
             # Implement actual conversion logic here
-            logger.log_info(f"File converted successfully: {input_file} to {output_format}.")
+            logger.info(f"File converted successfully: {input_file} to {output_format}.")
             return True
         except Exception as e:
-            logger.log_error(f"Failed to convert file {input_file}: {e}")
+            logger.error(f"Failed to convert file {input_file}: {e}")
             return False
