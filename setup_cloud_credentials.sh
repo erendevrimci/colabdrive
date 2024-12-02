@@ -59,33 +59,42 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 echo "Waiting for permissions to propagate..."
 sleep 60
 
+# Enable core APIs first
+echo "Enabling core APIs..."
+gcloud services enable serviceusage.googleapis.com --quiet || true
+sleep 30
+
 # Enable APIs with retries
 enable_api() {
     local api=$1
     local max_retries=3
     local retry_count=0
+    local retry_delay=45
     
     while [ $retry_count -lt $max_retries ]; do
         echo "Enabling $api (attempt $((retry_count + 1))/$max_retries)..."
-        if gcloud services enable $api; then
-            echo "$api enabled successfully"
-            return 0
-        else
-            retry_count=$((retry_count + 1))
-            if [ $retry_count -eq $max_retries ]; then
-                echo "Failed to enable $api after $max_retries attempts"
-                return 1
+        if gcloud services enable $api --async; then
+            echo "Initiated enabling $api"
+            sleep $retry_delay  # Wait for async operation
+            if gcloud services list --enabled --filter="name:$api" | grep -q "$api"; then
+                echo "$api enabled successfully"
+                return 0
             fi
-            echo "Retrying in 30 seconds..."
-            sleep 30
         fi
+        retry_count=$((retry_count + 1))
+        if [ $retry_count -eq $max_retries ]; then
+            echo "Warning: Issues enabling $api after $max_retries attempts"
+            return 1
+        fi
+        echo "Retrying in $retry_delay seconds..."
+        sleep $retry_delay
     done
 }
 
 # Enable APIs in specific order
 apis=(
-    "oauth2.googleapis.com"
     "cloudresourcemanager.googleapis.com"
+    "oauth2.googleapis.com"
     "drive.googleapis.com"
     "iap.googleapis.com"
 )
@@ -101,13 +110,18 @@ done
 echo "Creating OAuth credentials..."
 gcloud auth application-default login
 
-# Create OAuth client ID
-echo "Creating OAuth client ID..."
-gcloud auth application-default print-access-token > ~/.config/gcloud/application_default_credentials.json
+# Ensure credentials directory exists
+mkdir -p ~/.config/gcloud
 
-# Copy credentials to project directory
-echo "Copying credentials to project directory..."
-cp ~/.config/gcloud/application_default_credentials.json client_secrets.json
+# Create client secrets file
+echo "Creating client secrets file..."
+if [ -f ~/.config/gcloud/application_default_credentials.json ]; then
+    cp ~/.config/gcloud/application_default_credentials.json client_secrets.json
+    echo "Credentials setup complete!"
+else
+    echo "Error: Failed to create credentials file"
+    exit 1
+fi
 
 echo "Setup complete! client_secrets.json has been created."
 echo "Project ID: $PROJECT_ID"
