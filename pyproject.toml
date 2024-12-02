@@ -7,7 +7,7 @@ packages = ["colabdrive"]
 
 [project]
 name = "colabdrive"
-version = "0.1.0"
+version = "0.2.0"
 authors = [
   { name="Eren Devrimci", email="eren.devrimci@example.com" },
 ]
@@ -22,12 +22,18 @@ classifiers = [
 
 dependencies = [
     "google-auth",
-    "google-auth-oauthlib",
+    "google-auth-oauthlib", 
     "google-auth-httplib2",
     "google-api-python-client",
     "boto3",
     "dropbox",
     "gradio",
+    "huggingface-hub",
+    "GitPython",
+    "requests",
+    "PyDrive",
+    "typing-extensions>=4.0.0",
+    "python-dotenv>=0.19.0"
 ]
 
 [project.optional-dependencies]
