@@ -97,25 +97,17 @@ for api in "${apis[@]}"; do
     sleep 15  # Wait between APIs
 done
 
-# Create OAuth consent screen
-echo "Creating OAuth consent screen..."
-gcloud alpha auth application-default set-oauth-consent \
-    --application_title="ColabDrive" \
-    --support_email="$EMAIL"
-
 # Create OAuth credentials
 echo "Creating OAuth credentials..."
-gcloud auth application-default login --no-launch-browser
+gcloud auth application-default login
 
-# Create client ID for desktop application
-echo "Creating client ID..."
-gcloud auth application-default create-client-id \
-    --display_name="ColabDrive" \
-    --client-type=desktop
+# Create OAuth client ID
+echo "Creating OAuth client ID..."
+gcloud auth application-default print-access-token > ~/.config/gcloud/application_default_credentials.json
 
-# Download credentials
-echo "Downloading credentials..."
-gcloud auth application-default print-access-token > client_secrets.json
+# Copy credentials to project directory
+echo "Copying credentials to project directory..."
+cp ~/.config/gcloud/application_default_credentials.json client_secrets.json
 
 echo "Setup complete! client_secrets.json has been created."
 echo "Project ID: $PROJECT_ID"
