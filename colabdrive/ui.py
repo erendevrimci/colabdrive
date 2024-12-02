@@ -302,26 +302,29 @@ class UI:
 
     def launch(self) -> None:
         """Launches the Gradio interface."""
-        if self.interface is not None:
-            from colabdrive.config import config
-            # Try a range of ports if default is busy
-            port = config.get("server_port", 7860)
-            for attempt_port in range(port, port + 10):
-                try:
-                    self.interface.launch(
-                        server_name=config.get("server_name", "0.0.0.0"),
-                        server_port=attempt_port,
-                        share=True,
-                        allowed_paths=config.get("allowed_paths", [])
-                    )
-                    break
-                except OSError:
-                    if attempt_port == port + 9:
-                        raise
-                    continue
-            logger.info("Gradio interface launched.")
+        if not self.interface:
+            self.create_interface()
+            
+        from colabdrive.config import config
+        
+        # Try a range of ports starting from default
+        start_port = config.get("server_port", 7860)
+        max_attempts = 20  # Try more ports
+        
+        for attempt_port in range(start_port, start_port + max_attempts):
+            try:
+                self.interface.launch(
+                    server_name=config.get("server_name", "0.0.0.0"),
+                    server_port=attempt_port,
+                    share=True,
+                    allowed_paths=config.get("allowed_paths", []),
+                    prevent_thread_lock=True  # Allow for cleanup if needed
+                )
+                logger.info(f"Gradio interface launched on port {attempt_port}")
+                break
+            except OSError as e:
+                if attempt_port == start_port + max_attempts - 1:
+                    logger.error(f"Failed to find available port after {max_attempts} attempts")
+                    raise
+                continue
 
-# Create a UI instance and launch the interface
-ui = UI()
-ui.create_interface()
-ui.launch()
