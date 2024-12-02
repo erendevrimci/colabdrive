@@ -19,7 +19,7 @@ rm -f ~/.colabdrive/mycreds.txt
 
 # Revoke all credentials
 echo "Revoking gcloud credentials..."
-gcloud auth revoke --all
+gcloud auth revoke --all 2>/dev/null || true
 
 # Get current project
 CURRENT_PROJECT=$(gcloud config get-value project)

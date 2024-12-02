@@ -40,21 +40,24 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="user:$EMAIL" \
     --role="roles/owner"
 
-# Enable required APIs
-echo "Enabling required APIs..."
+# Enable Cloud Resource Manager API first
+echo "Enabling Cloud Resource Manager API..."
+gcloud services enable cloudresourcemanager.googleapis.com
+echo "Waiting for Cloud Resource Manager API to be ready..."
+sleep 30
+
+# Enable other required APIs
+echo "Enabling remaining APIs..."
 apis=(
     "drive.googleapis.com"
-    "cloudresourcemanager.googleapis.com"
     "oauth2.googleapis.com"
     "iap.googleapis.com"
 )
 
 for api in "${apis[@]}"; do
     echo "Enabling $api..."
-    gcloud services enable $api || {
-        echo "Failed to enable $api"
-        exit 1
-    }
+    gcloud services enable $api
+    sleep 10  # Wait between enabling each API
 done
 
 # Create OAuth consent screen
