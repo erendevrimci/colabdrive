@@ -30,19 +30,26 @@ class CloudStorage:
         try:
             gauth = GoogleAuth()
             gauth.settings['get_refresh_token'] = True
+            gauth.settings['oauth_scope'] = ['https://www.googleapis.com/auth/drive']
+            
             # Try to load saved client credentials
             gauth.LoadCredentialsFile("mycreds.txt")
+            
             if gauth.credentials is None:
-                # Use CommandLineAuth with specific settings
+                # Use LocalWebserverAuth for better user experience
                 gauth.GetFlow()
-                gauth.flow.params.update({'access_type': 'offline'})
-                gauth.flow.params.update({'approval_prompt': 'force'})
-                gauth.CommandLineAuth()
+                gauth.flow.params.update({
+                    'access_type': 'offline',
+                    'approval_prompt': 'force',
+                    'prompt': 'consent'
+                })
+                gauth.LocalWebserverAuth()
             elif gauth.access_token_expired:
-                # Refresh them if expired
-                gauth.Refresh()
+                try:
+                    gauth.Refresh()
+                except Exception:
+                    gauth.LocalWebserverAuth()
             else:
-                # Initialize the saved creds
                 gauth.Authorize()
             
             # Save the current credentials
