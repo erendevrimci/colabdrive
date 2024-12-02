@@ -50,6 +50,11 @@ class CloudStorage:
             
             if gauth.credentials is None:
                 # No credentials found, start new authentication
+                gauth.GetFlow()
+                gauth.flow.params.update({
+                    'access_type': 'offline',
+                    'approval_prompt': 'force'
+                })
                 gauth.LocalWebserverAuth(port_numbers=[8080])
             elif gauth.access_token_expired:
                 # Refresh expired token
