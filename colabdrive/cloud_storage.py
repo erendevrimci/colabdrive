@@ -45,12 +45,12 @@ class CloudStorage:
                     'prompt': 'consent'
                 })
                 # Use local webserver auth with specific port from config
-                gauth.LocalWebserverAuth(port=8080)
+                gauth.LocalWebserverAuth(port=8080, host='127.0.0.1')
             elif gauth.access_token_expired:
                 try:
                     gauth.Refresh()
                 except Exception:
-                    gauth.LocalWebserverAuth(port=8080)
+                    gauth.LocalWebserverAuth(port=8080, host='127.0.0.1')
             else:
                 gauth.Authorize()
             
