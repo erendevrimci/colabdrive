@@ -55,24 +55,46 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="user:$EMAIL" \
     --role="roles/owner"
 
-# Enable Cloud Resource Manager API first
-echo "Enabling Cloud Resource Manager API..."
-gcloud services enable cloudresourcemanager.googleapis.com
-echo "Waiting for Cloud Resource Manager API to be ready..."
-sleep 30
+# Wait for IAM permissions to propagate
+echo "Waiting for permissions to propagate..."
+sleep 60
 
-# Enable other required APIs
-echo "Enabling remaining APIs..."
+# Enable APIs with retries
+enable_api() {
+    local api=$1
+    local max_retries=3
+    local retry_count=0
+    
+    while [ $retry_count -lt $max_retries ]; do
+        echo "Enabling $api (attempt $((retry_count + 1))/$max_retries)..."
+        if gcloud services enable $api; then
+            echo "$api enabled successfully"
+            return 0
+        else
+            retry_count=$((retry_count + 1))
+            if [ $retry_count -eq $max_retries ]; then
+                echo "Failed to enable $api after $max_retries attempts"
+                return 1
+            fi
+            echo "Retrying in 30 seconds..."
+            sleep 30
+        fi
+    done
+}
+
+# Enable APIs in specific order
 apis=(
-    "drive.googleapis.com"
     "oauth2.googleapis.com"
+    "cloudresourcemanager.googleapis.com"
+    "drive.googleapis.com"
     "iap.googleapis.com"
 )
 
 for api in "${apis[@]}"; do
-    echo "Enabling $api..."
-    gcloud services enable $api
-    sleep 10  # Wait between enabling each API
+    if ! enable_api $api; then
+        echo "Warning: Failed to enable $api"
+    fi
+    sleep 15  # Wait between APIs
 done
 
 # Create OAuth consent screen
