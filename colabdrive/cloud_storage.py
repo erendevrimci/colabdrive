@@ -1,11 +1,8 @@
 ## cloud_storage.py
-
-import logging
 from typing import Optional
 import boto3
 import dropbox
 from colabdrive.config import config
-from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
@@ -13,8 +10,11 @@ from pydrive.drive import GoogleDrive
 # Import the logger instance from logger.py
 from logger import logger
 
+
 class CloudStorage:
-    """Class for managing file operations with Google Drive, S3, and Dropbox."""
+    """Class for managing file operations with Google Drive, S3, and Dropbox.
+    Handles authentication and file operations for multiple cloud storage services.
+    """
 
     def __init__(self) -> None:
         """Initializes the CloudStorage class."""
@@ -36,7 +36,8 @@ class CloudStorage:
             gauth.settings['get_refresh_token'] = True
             gauth.settings['oauth_scope'] = [
                 'https://www.googleapis.com/auth/drive',
-                f'https://www.googleapis.com/auth/cloud-platform.projects.{self.project_id}'
+                (f'https://www.googleapis.com/auth/cloud-platform'
+                 f'.projects.{self.project_id}')
             ]
             gauth.settings['client_config_file'] = 'client_secrets.json'
             
