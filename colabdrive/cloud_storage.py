@@ -32,13 +32,8 @@ class CloudStorage:
             # Try to load saved client credentials
             gauth.LoadCredentialsFile("mycreds.txt")
             if gauth.credentials is None:
-                # If no credentials available, try LocalWebserverAuth
-                try:
-                    gauth.LocalWebserverAuth()
-                except Exception as auth_error:
-                    logger.error(f"Local authentication failed: {auth_error}")
-                    # Fall back to command-line auth if local auth fails
-                    gauth.CommandLineAuth()
+                # Always use CommandLineAuth for more reliable authentication
+                gauth.CommandLineAuth()
             elif gauth.access_token_expired:
                 # Refresh them if expired
                 gauth.Refresh()
