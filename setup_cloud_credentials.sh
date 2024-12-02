@@ -67,31 +67,21 @@ gcloud config set project $PROJECT_ID
 echo "Enabling Google Drive API..."
 gcloud services enable drive.googleapis.com
 
+# Set quota project
+echo "Setting quota project..."
+gcloud auth application-default set-quota-project $PROJECT_ID
+
 # Configure OAuth consent screen
 echo "Configuring OAuth consent screen..."
-gcloud alpha iap oauth-brand create \
+gcloud iap oauth-brands create \
     --application_title="ColabDrive Test" \
     --support_email="$EMAIL"
 
-# Add test user
-echo "Adding test user..."
-gcloud alpha iap oauth-clients add-iam-policy-binding \
-    --role=roles/iap.httpsResourceAccessor \
-    --member="user:$EMAIL"
-
-# Create OAuth client ID
+# Create OAuth client ID and download credentials
 echo "Creating OAuth client ID..."
-CLIENT_INFO=$(gcloud alpha iap oauth-clients create \
-    --display_name="ColabDrive Test Client" \
-    --type=desktop)
+gcloud auth application-default login --client-id-file=client_secrets.json
 
-# Extract client ID
-CLIENT_ID=$(echo $CLIENT_INFO | grep -o 'client_id: [^ ]*' | cut -d' ' -f2)
-
-# Download credentials
-echo "Downloading credentials..."
-gcloud alpha iap oauth-clients get-credentials \
-    --client_id=$CLIENT_ID \
-    --output-file=client_secrets.json
+echo "Downloading OAuth 2.0 Client ID..."
+gcloud auth application-default print-access-token > client_secrets.json
 
 echo "Setup complete! client_secrets.json has been created."
