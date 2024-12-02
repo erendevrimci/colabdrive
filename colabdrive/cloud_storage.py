@@ -44,12 +44,26 @@ class CloudStorage:
                     'approval_prompt': 'force',
                     'prompt': 'consent'
                 })
-                # Use local webserver auth with specific port from config
+                # Use local webserver auth with explicit redirect URI
+                redirect_uri = 'http://127.0.0.1:8080/'
+                gauth.GetFlow()
+                gauth.flow.params.update({
+                    'access_type': 'offline',
+                    'approval_prompt': 'force',
+                    'redirect_uri': redirect_uri
+                })
                 gauth.LocalWebserverAuth(port=8080, host='127.0.0.1')
             elif gauth.access_token_expired:
                 try:
                     gauth.Refresh()
                 except Exception:
+                    redirect_uri = 'http://127.0.0.1:8080/'
+                    gauth.GetFlow()
+                    gauth.flow.params.update({
+                        'access_type': 'offline',
+                        'approval_prompt': 'force',
+                        'redirect_uri': redirect_uri
+                    })
                     gauth.LocalWebserverAuth(port=8080, host='127.0.0.1')
             else:
                 gauth.Authorize()
