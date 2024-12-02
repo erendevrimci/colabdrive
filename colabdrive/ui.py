@@ -265,14 +265,13 @@ class UI:
             str: Status message indicating the result of the download.
         """
         logger.info(f"Attempting to download file with ID: {file_id}")
-        destination = "path/to/save/file"  # Define the destination path
-        success = self.file_operations.download_file(file_id, destination)
-        if success:
-            logger.info(f"File downloaded successfully: {file_id}")
-            return "Download successful!"
-        else:
-            logger.error(f"Failed to download file with ID: {file_id}")
-            return "Download failed."
+        
+        if not file_id or not file_id.strip():
+            return "Error: Please provide a valid file ID"
+            
+        success, message = self.file_operations.download_file(file_id)
+        logger.info(f"Download result: {message}")
+        return message
 
     def convert_file(self, input_file: str, output_format: str) -> str:
         """Handles file conversion and updates the status.
@@ -284,14 +283,22 @@ class UI:
         Returns:
             str: Status message indicating the result of the conversion.
         """
-        logger.info(f"Attempting to convert file: {input_file} to {output_format}")
-        success = self.file_operations.convert_file(input_file, output_format)
-        if success:
-            logger.info(f"File converted successfully: {input_file} to {output_format}")
-            return "Conversion successful!"
+        if not input_file:
+            return "Error: No file selected"
+            
+        if not output_format or not output_format.strip():
+            return "Error: Please specify output format"
+            
+        # Get the actual file path from gradio's file component
+        if isinstance(input_file, dict) and 'name' in input_file:
+            file_path = input_file['name']
         else:
-            logger.error(f"Failed to convert file: {input_file}")
-            return "Conversion failed."
+            return "Error: Invalid file input"
+            
+        logger.info(f"Attempting to convert file: {file_path} to {output_format}")
+        success, message = self.file_operations.convert_file(file_path, output_format)
+        logger.info(f"Conversion result: {message}")
+        return message
 
     def launch(self) -> None:
         """Launches the Gradio interface."""

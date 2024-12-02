@@ -156,25 +156,52 @@ class FileOperations:
             Tuple[bool, str]: (Success status, Message with details)
         """
         if not self.drive:
-            return False, "Google Drive not configured. Download not available."
+            return False, "Error: Google Drive not configured. Please authenticate first."
+            
+        if not self.gauth or not self.gauth.credentials:
+            return False, "Error: Not authenticated with Google Drive. Please authenticate first."
             
         try:
-            downloaded_file = self.drive.CreateFile({'id': file_id})
+            # Verify file exists and is accessible
+            try:
+                downloaded_file = self.drive.CreateFile({'id': file_id})
+                downloaded_file.FetchMetadata()
+            except Exception as e:
+                if 'accessNotConfigured' in str(e):
+                    return False, "Error: Google Drive API not properly configured. Please check your credentials."
+                elif 'File not found' in str(e):
+                    return False, f"Error: File with ID {file_id} not found"
+                else:
+                    return False, f"Error accessing file: {str(e)}"
+                    
             filename = downloaded_file['title']
             
+            # Validate filename
+            if not filename or not filename.strip():
+                return False, "Error: Invalid filename received from Google Drive"
+                
             # Determine destination path
             final_destination_dir = destination_dir if destination_dir else self.downloads_dir
             os.makedirs(final_destination_dir, exist_ok=True)
             destination_path = os.path.join(final_destination_dir, filename)
             
+            # Download file with progress tracking
             downloaded_file.GetContentFile(destination_path)
             
-            success_msg = f"File downloaded successfully to: {destination_path}"
+            # Verify download
+            if not os.path.exists(destination_path):
+                return False, "Error: Download failed - file not created"
+                
+            if os.path.getsize(destination_path) == 0:
+                os.remove(destination_path)
+                return False, "Error: Download failed - empty file"
+                
+            success_msg = f"Success: File downloaded to {destination_path}"
             logger.info(success_msg)
             return True, success_msg
             
         except Exception as e:
-            error_msg = f"Failed to download file {file_id}: {str(e)}"
+            error_msg = f"Error downloading file: {str(e)}"
             logger.error(error_msg)
             return False, error_msg
 
@@ -198,22 +225,33 @@ class FileOperations:
         Returns:
             Tuple[bool, str]: (Success status, Message with details)
         """
+        # Input validation
         if not os.path.exists(input_file):
-            return False, f"Input file not found: {input_file}"
+            return False, f"Error: Input file not found: {input_file}"
             
+        if not os.path.isfile(input_file):
+            return False, f"Error: {input_file} is not a file"
+            
+        # Format validation
         input_ext = os.path.splitext(input_file)[1][1:].lower()
-        output_format = output_format.lower()
+        output_format = output_format.lower().strip('.')
         
-        # Validate conversion possibility
-        valid_conversion = False
-        for category in self.VALID_CONVERSIONS:
-            if (input_ext in self.VALID_CONVERSIONS[category]['source'] and 
-                output_format in self.VALID_CONVERSIONS[category]['target']):
-                valid_conversion = True
+        if not input_ext:
+            return False, "Error: Input file has no extension"
+            
+        if not output_format:
+            return False, "Error: Output format not specified"
+            
+        # Check if conversion is supported
+        conversion_category = None
+        for category, formats in self.VALID_CONVERSIONS.items():
+            if input_ext in formats['source'] and output_format in formats['target']:
+                conversion_category = category
                 break
                 
-        if not valid_conversion:
-            return False, f"Conversion from {input_ext} to {output_format} is not supported"
+        if not conversion_category:
+            supported_formats = {cat: self.VALID_CONVERSIONS[cat] for cat in self.VALID_CONVERSIONS}
+            return False, f"Error: Conversion from {input_ext} to {output_format} is not supported.\nSupported conversions: {supported_formats}"
             
         try:
             # Determine output path
