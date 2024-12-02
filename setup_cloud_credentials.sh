@@ -73,15 +73,21 @@ gcloud auth application-default set-quota-project $PROJECT_ID
 
 # Configure OAuth consent screen
 echo "Configuring OAuth consent screen..."
-gcloud iap oauth-brands create \
+gcloud services enable cloudresourcemanager.googleapis.com
+gcloud services enable oauth2.googleapis.com
+
+echo "Creating OAuth consent screen..."
+gcloud alpha auth application-default set-oauth-consent \
     --application_title="ColabDrive Test" \
     --support_email="$EMAIL"
 
-# Create OAuth client ID and download credentials
+# Create OAuth client ID
 echo "Creating OAuth client ID..."
-gcloud auth application-default login --client-id-file=client_secrets.json
+gcloud alpha auth application-default create-client-id \
+    --display_name="ColabDrive Test Client" \
+    --client-type=desktop
 
-echo "Downloading OAuth 2.0 Client ID..."
-gcloud auth application-default print-access-token > client_secrets.json
+echo "Downloading OAuth credentials..."
+gcloud auth application-default print-access-token --format="json" > client_secrets.json
 
 echo "Setup complete! client_secrets.json has been created."
