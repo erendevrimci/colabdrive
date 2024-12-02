@@ -19,6 +19,9 @@ class DriveOperations:
         except ImportError:
             logger.info("Not running in Colab environment")
             return False
+        except Exception as e:
+            logger.error(f"Error checking Colab environment: {e}")
+            return False
         
     def mount_drive(self) -> bool:
         """Mount Google Drive in Colab."""
