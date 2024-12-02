@@ -1,69 +1,92 @@
-# Getting Started with Google Cloud Credentials
+# Setting Up Google Cloud Credentials Using gcloud CLI
 
-This guide will walk you through the process of obtaining Google Cloud credentials for using ColabDrive.
+This guide shows how to set up Google Cloud credentials for ColabDrive using the command line.
 
-## Step 1: Create a Google Cloud Project
+## Prerequisites
 
-1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
-2. Sign in with your Google account
-3. Click on the project dropdown at the top of the page
-4. Click "New Project"
-5. Enter a project name (e.g., "ColabDrive")
-6. Click "Create"
+1. Install the Google Cloud SDK:
+   ```bash
+   # For macOS with Homebrew
+   brew install google-cloud-sdk
+   ```
 
-## Step 2: Enable the Google Drive API
+## Step 1: Initialize gcloud and Create Project
 
-1. In the Cloud Console, go to the [API Library](https://console.cloud.google.com/apis/library)
-2. Search for "Google Drive API"
-3. Click on "Google Drive API"
-4. Click "Enable"
+```bash
+# Login to Google Cloud
+gcloud auth login
 
-## Step 3: Create Testing Credentials
+# Create new project
+gcloud projects create colabdrive-test --name="ColabDrive Test"
 
-1. Go to the [Credentials page](https://console.cloud.google.com/apis/credentials)
-2. Click "Create Credentials"
-3. Select "OAuth client ID"
-4. If this is your first time, you'll need to configure the OAuth consent screen:
-   - Click "Configure Consent Screen"
-   - Choose "External" user type (Note: Your app will remain in testing mode)
-   - Fill in the required information (app name, user support email, developer contact)
-   - Add your privacy policy URL (https://your-domain.com/privacy_policy.html)
-   - For scopes, add Google Drive API scopes
-   - Add your email as a test user
-   - Save and continue
+# Set the project as active
+gcloud config set project colabdrive-test
+```
 
-5. Back on the credentials page:
-   - Choose "Desktop app" as the application type for testing
-   - Give it a name (e.g., "ColabDrive Test Client")
-   - Click "Create"
-   - Note: In testing mode, only authorized test users can access the app
+## Step 2: Enable Required APIs
 
-## Step 4: Download and Use Credentials
+```bash
+# Enable the Google Drive API
+gcloud services enable drive.googleapis.com
+```
 
-1. After creating the credentials, you'll see a download button (looks like a download icon)
-2. Click download to get your `client_secrets.json` file
-3. Replace the placeholder content in your `client_secrets.json` with the downloaded content
+## Step 3: Configure OAuth Consent Screen
+
+```bash
+# Create OAuth consent screen configuration
+gcloud alpha iap oauth-brand create \
+    --application_title="ColabDrive Test" \
+    --support_email="your-email@example.com"
+
+# Add test users (for testing mode)
+gcloud alpha iap oauth-clients add-iam-policy-binding \
+    --role=roles/iap.httpsResourceAccessor \
+    --member=user:your-email@example.com
+```
+
+## Step 4: Create OAuth Client ID
+
+```bash
+# Create OAuth client ID for desktop application
+gcloud alpha iap oauth-clients create \
+    --display_name="ColabDrive Test Client" \
+    --type=desktop
+
+# Download the credentials
+gcloud alpha iap oauth-clients get-credentials \
+    --client_id=YOUR_CLIENT_ID \
+    --output-file=client_secrets.json
+```
 
 ## Step 5: Set Up in ColabDrive
 
-1. Place the `client_secrets.json` file in your project root directory
-2. The first time you run ColabDrive, it will use these credentials to authenticate
-3. You'll be prompted to authorize the application in your browser
-4. After authorization, credentials will be saved for future use
+1. The downloaded `client_secrets.json` will be automatically placed in your project directory
+2. First run will prompt for authorization in your browser
+3. Credentials will be saved for future use
 
 ## Important Notes
 
-- Keep your `client_secrets.json` file secure and never commit it to public repositories
-- If you're using Google Colab, you'll need to upload the credentials file each time you start a new session
-- For testing, you can use the credentials immediately
-- For production use, you'll need to verify your app through Google's OAuth verification process
+- Keep `client_secrets.json` secure and never commit it to public repositories
+- For Colab usage, upload credentials each new session
+- Only test users can access the app in testing mode
+- For production, complete Google's OAuth verification process
 
 ## Troubleshooting
 
-If you encounter authentication errors:
-1. Ensure the Google Drive API is enabled
-2. Check that your credentials are properly configured
-3. Verify you've added yourself as a test user in the OAuth consent screen
-4. Make sure the `client_secrets.json` file is in the correct location
+Run these commands to verify your setup:
+```bash
+# Check API status
+gcloud services list --enabled
 
-For additional help, refer to the [Google Cloud Documentation](https://cloud.google.com/docs) or open an issue in our repository.
+# Verify OAuth configuration
+gcloud alpha iap oauth-brands list
+gcloud alpha iap oauth-clients list
+
+# Check project settings
+gcloud config list
+```
+
+For more help:
+```bash
+gcloud help
+```
