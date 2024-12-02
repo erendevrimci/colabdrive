@@ -19,3 +19,11 @@ colab-dev-tools
 logger
 torch
 transformers
+Pillow 
+pypandoc 
+pydub 
+moviepy
+google-auth 
+google-auth-oauthlib 
+google-auth-httplib2 
+google-api-python-client

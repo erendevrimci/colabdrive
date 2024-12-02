@@ -9,7 +9,7 @@ packages = ["colabdrive"]
 name = "colabdrive"
 version = "0.2.0"
 authors = [
-  { name="Eren Devrimci", email="eren.devrimci@example.com" },
+  { name="Eren Devrimci", email="erendevrimci@gmail.com" },
 ]
 description = "A tool for managing Google Drive operations in Google Colab"
 readme = "README.md"
@@ -31,7 +31,7 @@ dependencies = [
     "huggingface-hub",
     "GitPython",
     "requests",
-    "PyDrive",
+    "PyDrive2",
     "typing-extensions>=4.0.0",
     "python-dotenv>=0.19.0"
 ]
