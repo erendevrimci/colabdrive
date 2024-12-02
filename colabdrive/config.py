@@ -24,14 +24,14 @@ class Config:
                 "model_path": os.path.join(os.path.expanduser('~'), 'models'),
                 "drive_mount_point": None,
                 "server_name": "127.0.0.1",
-                "server_port": 7860,  # Must match OAuth redirect URI port
+                "server_port": 8080,  # Must match OAuth redirect URI port
                 "allowed_paths": [os.path.expanduser('~')]
             },
             "colab": {
                 "model_path": "/content/drive/My Drive/models",
                 "drive_mount_point": "/content/drive",
                 "server_name": "127.0.0.1",
-                "server_port": 7860,
+                "server_port": 8080,
                 "allowed_paths": ["/content", "/content/drive"]
             }
         }
