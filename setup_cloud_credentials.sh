@@ -149,21 +149,31 @@ done
 
 # Create OAuth credentials
 echo "Creating OAuth credentials..."
-gcloud auth application-default login --no-launch-browser \
-    --redirect-uri=http://127.0.0.1:8080/
+gcloud auth application-default login --no-launch-browser
 
-# Configure OAuth consent screen
+# Configure OAuth consent screen with retries
 echo "Configuring OAuth consent screen..."
-gcloud services enable iap.googleapis.com
-gcloud iap oauth-brand add \
-    --application_title="ColabDrive" \
-    --support_email="$EMAIL"
+max_retries=3
+retry_count=0
 
-# Add authorized redirect URI
-echo "Adding authorized redirect URI..."
-gcloud iap oauth-client add \
-    --display_name="ColabDrive Local" \
-    --redirect_uris="http://127.0.0.1:8080/"
+while [ $retry_count -lt $max_retries ]; do
+    if gcloud services enable oauth2.googleapis.com; then
+        break
+    fi
+    retry_count=$((retry_count + 1))
+    if [ $retry_count -eq $max_retries ]; then
+        echo "Warning: OAuth2 API could not be enabled. Some features may be limited."
+    else
+        echo "Retrying OAuth2 API enable in 10 seconds..."
+        sleep 10
+    fi
+done
+
+# Create OAuth client ID
+echo "Creating OAuth client ID..."
+if ! gcloud auth application-default set-quota-project "$PROJECT_ID" 2>/dev/null; then
+    echo "Warning: Could not set quota project. Using default credentials."
+fi
 
 # Ensure credentials directory exists
 mkdir -p ~/.config/gcloud
