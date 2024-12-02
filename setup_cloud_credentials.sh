@@ -63,18 +63,28 @@ create_project $PROJECT_ID || exit 1
 # Set the project as active
 gcloud config set project $PROJECT_ID
 
-# Enable required APIs
-echo "Enabling Google Drive API..."
-gcloud services enable drive.googleapis.com
+# Check if user has owner role
+echo "Checking project permissions..."
+if ! gcloud projects get-iam-policy $PROJECT_ID --format='get(bindings)' | grep -q "roles/owner"; then
+    echo "Granting owner role to $EMAIL..."
+    gcloud projects add-iam-policy-binding $PROJECT_ID \
+        --member="user:$EMAIL" \
+        --role="roles/owner"
+fi
+
+# Enable required APIs with error handling
+echo "Enabling required APIs..."
+for api in "drive.googleapis.com" "cloudresourcemanager.googleapis.com" "oauth2.googleapis.com" "iap.googleapis.com"; do
+    echo "Enabling $api..."
+    if ! gcloud services enable $api; then
+        echo "Failed to enable $api. Please ensure you have owner permissions."
+        exit 1
+    fi
+done
 
 # Set quota project
 echo "Setting quota project..."
 gcloud auth application-default set-quota-project $PROJECT_ID
-
-# Configure OAuth consent screen
-echo "Configuring OAuth consent screen..."
-gcloud services enable cloudresourcemanager.googleapis.com
-gcloud services enable oauth2.googleapis.com
 
 echo "Creating OAuth consent screen..."
 gcloud alpha auth application-default set-oauth-consent \
