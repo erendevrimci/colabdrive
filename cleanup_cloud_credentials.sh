@@ -21,11 +21,15 @@ rm -f ~/.colabdrive/mycreds.txt
 echo "Revoking gcloud credentials..."
 gcloud auth revoke --all 2>/dev/null || true
 
-# Get current project
+# Get current project and ensure we're authenticated
+gcloud auth login --quiet || true
 CURRENT_PROJECT=$(gcloud config get-value project)
 
-if [ ! -z "$CURRENT_PROJECT" ]; then
+if [ ! -z "$CURRENT_PROJECT" ] && [ "$CURRENT_PROJECT" != "None" ]; then
     echo "Cleaning up project: $CURRENT_PROJECT"
+    
+    # Ensure we're authenticated before proceeding
+    gcloud auth login --quiet || true
     
     # Disable APIs
     echo "Disabling APIs..."

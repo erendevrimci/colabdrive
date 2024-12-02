@@ -22,13 +22,28 @@ fi
 echo "Logging in to Google Cloud..."
 gcloud auth login
 
-# Create new project
+# Create new project with retry logic
 PROJECT_ID="colabdrive-$(date +%Y%m%d%H%M%S)"
 echo "Creating project: ${PROJECT_ID}..."
-gcloud projects create $PROJECT_ID --name="ColabDrive" || {
-    echo "Failed to create project"
-    exit 1
-}
+
+max_retries=3
+retry_count=0
+retry_delay=60  # seconds
+
+while [ $retry_count -lt $max_retries ]; do
+    if gcloud projects create $PROJECT_ID --name="ColabDrive"; then
+        echo "Project created successfully"
+        break
+    else
+        retry_count=$((retry_count + 1))
+        if [ $retry_count -eq $max_retries ]; then
+            echo "Failed to create project after $max_retries attempts"
+            exit 1
+        fi
+        echo "Project creation failed. Waiting ${retry_delay} seconds before retry $retry_count of $max_retries..."
+        sleep $retry_delay
+    fi
+done
 
 # Set the project as active
 echo "Setting active project..."
