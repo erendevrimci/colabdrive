@@ -29,10 +29,14 @@ class CloudStorage:
         """
         try:
             gauth = GoogleAuth()
+            gauth.settings['get_refresh_token'] = True
             # Try to load saved client credentials
             gauth.LoadCredentialsFile("mycreds.txt")
             if gauth.credentials is None:
-                # Always use CommandLineAuth for more reliable authentication
+                # Use CommandLineAuth with specific settings
+                gauth.GetFlow()
+                gauth.flow.params.update({'access_type': 'offline'})
+                gauth.flow.params.update({'approval_prompt': 'force'})
                 gauth.CommandLineAuth()
             elif gauth.access_token_expired:
                 # Refresh them if expired
