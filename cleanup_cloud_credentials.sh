@@ -9,6 +9,13 @@ if ! command -v gcloud &> /dev/null; then
     exit 1
 fi
 
+# Ask for confirmation
+read -p "This will remove all ColabDrive credentials and project. Continue? (y/n): " CONFIRM
+if [[ ! $CONFIRM =~ ^[Yy]$ ]]; then
+    echo "Cleanup cancelled"
+    exit 0
+fi
+
 echo "Starting cleanup process..."
 
 # List and delete all existing OAuth 2.0 client IDs

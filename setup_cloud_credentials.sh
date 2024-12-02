@@ -9,8 +9,19 @@ if ! command -v gcloud &> /dev/null; then
     exit 1
 fi
 
-# Prompt for email
-read -p "Enter your email address: " EMAIL
+# Check for existing setup
+CURRENT_PROJECT=$(gcloud config get-value project)
+if [ ! -z "$CURRENT_PROJECT" ] && [ "$CURRENT_PROJECT" != "None" ]; then
+    read -p "Existing project found ($CURRENT_PROJECT). Do you want to use it? (y/n): " USE_EXISTING
+    if [[ $USE_EXISTING =~ ^[Yy]$ ]]; then
+        PROJECT_ID=$CURRENT_PROJECT
+        echo "Using existing project: $PROJECT_ID"
+    fi
+fi
+
+if [ -z "$PROJECT_ID" ]; then
+    # Prompt for email only if creating new project
+    read -p "Enter your email address: " EMAIL
 
 # Validate email format
 if [[ ! "$EMAIL" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
@@ -22,28 +33,30 @@ fi
 echo "Logging in to Google Cloud..."
 gcloud auth login
 
-# Create new project with retry logic
-PROJECT_ID="colabdrive-$(date +%Y%m%d%H%M%S)"
-echo "Creating project: ${PROJECT_ID}..."
+if [ -z "$PROJECT_ID" ]; then
+    # Create new project only if not using existing
+    PROJECT_ID="colabdrive-$(date +%Y%m%d%H%M%S)"
+    echo "Creating project: ${PROJECT_ID}..."
 
-max_retries=3
-retry_count=0
-retry_delay=60  # seconds
+    max_retries=3
+    retry_count=0
+    retry_delay=60  # seconds
 
-while [ $retry_count -lt $max_retries ]; do
-    if gcloud projects create $PROJECT_ID --name="ColabDrive"; then
-        echo "Project created successfully"
-        break
-    else
-        retry_count=$((retry_count + 1))
-        if [ $retry_count -eq $max_retries ]; then
-            echo "Failed to create project after $max_retries attempts"
-            exit 1
+    while [ $retry_count -lt $max_retries ]; do
+        if gcloud projects create $PROJECT_ID --name="ColabDrive"; then
+            echo "Project created successfully"
+            break
+        else
+            retry_count=$((retry_count + 1))
+            if [ $retry_count -eq $max_retries ]; then
+                echo "Failed to create project after $max_retries attempts"
+                exit 1
+            fi
+            echo "Project creation failed. Waiting ${retry_delay} seconds before retry $retry_count of $max_retries..."
+            sleep $retry_delay
         fi
-        echo "Project creation failed. Waiting ${retry_delay} seconds before retry $retry_count of $max_retries..."
-        sleep $retry_delay
-    fi
-done
+    done
+fi
 
 # Set the project as active
 echo "Setting active project..."
