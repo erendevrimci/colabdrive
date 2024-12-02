@@ -14,7 +14,7 @@ class ModelOperations:
         self.default_path = self._get_default_path()
         os.makedirs(self.default_path, exist_ok=True)
         self.chunk_size = 8192
-        logger.log_info(f"Model operations initialized with path: {self.default_path}")
+        logger.info(f"Model operations initialized with path: {self.default_path}")
         
     def _check_colab_environment(self) -> bool:
         """Check if running in Google Colab environment."""
@@ -22,7 +22,7 @@ class ModelOperations:
             import google.colab
             return True
         except ImportError:
-            logger.log_info("Not running in Colab environment")
+            logger.info("Not running in Colab environment")
             return False
             
     def _get_default_path(self) -> str:
@@ -44,13 +44,13 @@ class ModelOperations:
                 with open(destination_path, 'wb') as f:
                     for data in response.iter_content(block_size):
                         f.write(data)
-                logger.log_info(f"Downloaded {file_name} from HuggingFace")
+                logger.info(f"Downloaded {file_name} from HuggingFace")
                 return destination_path
             else:
-                logger.log_error(f"Failed to download from HuggingFace: {response.status_code}")
+                logger.error(f"Failed to download from HuggingFace: {response.status_code}")
                 return None
         except Exception as e:
-            logger.log_error(f"Error downloading from HuggingFace: {e}")
+            logger.error(f"Error downloading from HuggingFace: {e}")
             return None
             
     def clone_github_repo(self, repo_url: str) -> Optional[str]:
@@ -59,10 +59,10 @@ class ModelOperations:
             repo_name = repo_url.split('/')[-1].replace('.git', '')
             destination_path = os.path.join(self.default_path, repo_name)
             Repo.clone_from(repo_url, destination_path)
-            logger.log_info(f"Cloned repository to {destination_path}")
+            logger.info(f"Cloned repository to {destination_path}")
             return destination_path
         except Exception as e:
-            logger.log_error(f"Error cloning repository: {e}")
+            logger.error(f"Error cloning repository: {e}")
             return None
             
     def download_civitai_model(self, model_url: str) -> Optional[str]:
@@ -77,11 +77,11 @@ class ModelOperations:
                     for chunk in response.iter_content(chunk_size=8192):
                         if chunk:
                             f.write(chunk)
-                logger.log_info(f"Downloaded model from CivitAI to {destination_path}")
+                logger.info(f"Downloaded model from CivitAI to {destination_path}")
                 return destination_path
             else:
-                logger.log_error(f"Failed to download from CivitAI: {response.status_code}")
+                logger.error(f"Failed to download from CivitAI: {response.status_code}")
                 return None
         except Exception as e:
-            logger.log_error(f"Error downloading from CivitAI: {e}")
+            logger.error(f"Error downloading from CivitAI: {e}")
             return None
