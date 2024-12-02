@@ -20,7 +20,7 @@ class UI:
         try:
             self.model_operations = ModelOperations()
         except Exception as e:
-            logger.log_error(f"Failed to initialize ModelOperations: {e}")
+            logger.error(f"Failed to initialize ModelOperations: {e}")
             self.model_operations = None
 
     def mount_drive(self) -> str:
@@ -231,7 +231,7 @@ class UI:
             self.download_button.click(self.download_file, inputs=self.download_file_input, outputs=self.download_status)
             self.convert_button.click(self.convert_file, inputs=[self.convert_file_input, self.output_format_input], outputs=self.convert_status)
 
-        logger.log_info("User interface created successfully.")
+        logger.info("User interface created successfully.")
 
     def upload_file(self, file: str) -> str:
         """Handles file upload and updates the status.
@@ -242,13 +242,13 @@ class UI:
         Returns:
             str: Status message indicating the result of the upload.
         """
-        logger.log_info(f"Attempting to upload file: {file}")
+        logger.info(f"Attempting to upload file: {file}")
         success = self.file_operations.upload_file(file)
         if success:
-            logger.log_info(f"File uploaded successfully: {file}")
+            logger.info(f"File uploaded successfully: {file}")
             return "Upload successful!"
         else:
-            logger.log_error(f"Failed to upload file: {file}")
+            logger.error(f"Failed to upload file: {file}")
             return "Upload failed."
 
     def download_file(self, file_id: str) -> str:
@@ -260,14 +260,14 @@ class UI:
         Returns:
             str: Status message indicating the result of the download.
         """
-        logger.log_info(f"Attempting to download file with ID: {file_id}")
+        logger.info(f"Attempting to download file with ID: {file_id}")
         destination = "path/to/save/file"  # Define the destination path
         success = self.file_operations.download_file(file_id, destination)
         if success:
-            logger.log_info(f"File downloaded successfully: {file_id}")
+            logger.info(f"File downloaded successfully: {file_id}")
             return "Download successful!"
         else:
-            logger.log_error(f"Failed to download file with ID: {file_id}")
+            logger.error(f"Failed to download file with ID: {file_id}")
             return "Download failed."
 
     def convert_file(self, input_file: str, output_format: str) -> str:
@@ -280,13 +280,13 @@ class UI:
         Returns:
             str: Status message indicating the result of the conversion.
         """
-        logger.log_info(f"Attempting to convert file: {input_file} to {output_format}")
+        logger.info(f"Attempting to convert file: {input_file} to {output_format}")
         success = self.file_operations.convert_file(input_file, output_format)
         if success:
-            logger.log_info(f"File converted successfully: {input_file} to {output_format}")
+            logger.info(f"File converted successfully: {input_file} to {output_format}")
             return "Conversion successful!"
         else:
-            logger.log_error(f"Failed to convert file: {input_file}")
+            logger.error(f"Failed to convert file: {input_file}")
             return "Conversion failed."
 
     def launch(self) -> None:
@@ -298,7 +298,7 @@ class UI:
                 share=True,
                 allowed_paths=["/content", "/content/drive"]
             )
-            logger.log_info("Gradio interface launched.")
+            logger.info("Gradio interface launched.")
 
 # Create a UI instance and launch the interface
 ui = UI()
