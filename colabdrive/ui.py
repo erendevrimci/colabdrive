@@ -293,11 +293,9 @@ class UI:
         """Launches the Gradio interface."""
         if self.interface is not None:
             self.interface.launch(
-                server_name="0.0.0.0",
-                server_port=443,
+                server_name="127.0.0.1",
+                server_port=7860,
                 share=True,
-                ssl_keyfile="key.pem",
-                ssl_certfile="cert.pem",
                 allowed_paths=["/content", "/content/drive"]
             )
             logger.log_info("Gradio interface launched.")
