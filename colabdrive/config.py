@@ -24,7 +24,7 @@ class Config:
                 "model_path": os.path.join(os.path.expanduser('~'), 'models'),
                 "drive_mount_point": None,
                 "server_name": "127.0.0.1",
-                "server_port": 7680,
+                "server_port": 8080,
                 "oauth_redirect_uri": "http://127.0.0.1:8080/",
                 "allowed_paths": [os.path.expanduser('~')],
                 "privacy_policy_url": "http://127.0.0.1:8080/privacy_policy.html",
@@ -36,7 +36,8 @@ class Config:
                 "model_path": "/content/drive/My Drive/models",
                 "drive_mount_point": "/content/drive",
                 "server_name": "127.0.0.1", 
-                "server_port": 8080,
+                "server_port": 7680,
+                "GRADIO_SERVER_PORT": 7681,
                 "oauth_redirect_uri": "http://127.0.0.1:8080/",
                 "allowed_paths": ["/content", "/content/drive"]
             }
