@@ -18,14 +18,14 @@ This guide will walk you through the process of obtaining Google Cloud credentia
 3. Click on "Google Drive API"
 4. Click "Enable"
 
-## Step 3: Create Credentials
+## Step 3: Create Testing Credentials
 
 1. Go to the [Credentials page](https://console.cloud.google.com/apis/credentials)
 2. Click "Create Credentials"
 3. Select "OAuth client ID"
 4. If this is your first time, you'll need to configure the OAuth consent screen:
    - Click "Configure Consent Screen"
-   - Choose "External" user type
+   - Choose "External" user type (Note: Your app will remain in testing mode)
    - Fill in the required information (app name, user support email, developer contact)
    - Add your privacy policy URL (https://your-domain.com/privacy_policy.html)
    - For scopes, add Google Drive API scopes
@@ -33,9 +33,10 @@ This guide will walk you through the process of obtaining Google Cloud credentia
    - Save and continue
 
 5. Back on the credentials page:
-   - Choose "Desktop app" as the application type
-   - Give it a name (e.g., "ColabDrive Client")
+   - Choose "Desktop app" as the application type for testing
+   - Give it a name (e.g., "ColabDrive Test Client")
    - Click "Create"
+   - Note: In testing mode, only authorized test users can access the app
 
 ## Step 4: Download and Use Credentials
 

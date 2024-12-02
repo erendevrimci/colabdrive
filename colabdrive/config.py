@@ -26,7 +26,7 @@ class Config:
                 "server_name": "127.0.0.1",
                 "server_port": 8080,  # Must match OAuth redirect URI port
                 "allowed_paths": [os.path.expanduser('~')],
-                "privacy_policy_url": "https://your-domain.com/privacy_policy.html"
+                "privacy_policy_url": "http://127.0.0.1:8080/privacy_policy.html"
             },
             "colab": {
                 "model_path": "/content/drive/My Drive/models",
